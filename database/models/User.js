@@ -45,10 +45,10 @@ module.exports = (sequelize, dataTypes) => {
     const User = sequelize.define(alias,cols,config);
 
     User.associate = (models) => {
-        User.hasOne(models.Cart, {
-            as: 'user_cart',
-            foreignKey: 'fk_id_usuario',
-            onDelete: 'RESTRICT',
+        User.belongsTo(models.Cart, {
+            as: 'cart_user',
+            foreignKey: 'fk_id_cart',
+            onDelete: 'CASCADE',
             onUpdate: 'CASCADE'
         })
     }

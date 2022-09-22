@@ -21,9 +21,9 @@ module.exports = (sequelize, dataTypes) => {
     const Cart = sequelize.define(alias, fields, config);
 
     Cart.associate = (models) => {
-        Cart.belongsTo(models.User, {
-            as: 'cart_user',
-            foreignKey: 'fk_id_usuario',
+        Cart.hasOne(models.User, {
+            as: 'user_cart',
+            foreignKey: 'fk_id_cart',
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE'
         })
