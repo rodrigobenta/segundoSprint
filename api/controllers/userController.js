@@ -6,14 +6,16 @@ const jwt = require('../../helpers/generateJWT')
 
 const login = async (req,res) => {
     try {
-        
+        await db.User.findAll({
+            where:{
+                username: req.body.username 
+            }
+        })
     } catch (error) {
         
     }
     // try {
-    //     let data = fs.readFileSync(process.env.RUTA_DB_USER, 'utf-8');
-    //     data = JSON.parse(data);
-    //     let userLogin = data.find(data => data.username == req.body.username && data.password == req.body.password);
+
     //     if(!userLogin) res.status(500).json({
     //         msg: "No existe usuario o contraseña"
     //     })
@@ -90,9 +92,12 @@ const createUser = async (req,res) => {
 const editUserById = async (req,res) => {
     try {
         const body = req.body;
-        const userEdit = await db.User.findByPk(Number(req.params.id));
-        await db.User.update(body,{ where: { id_user: Number(req.params.id) }});
-        if(userEdit) res.status(200).json(userEdit);
+        const userExist = await db.User.findByPk(Number(req.params.id));
+        if(userExist){
+            await db.User.update(body,{ where: { id_user: Number(req.params.id) }});
+            const userEdit = await db.User.findByPk(Number(req.params.id));
+            res.status(200).json(userEdit); 
+        } 
         else res.status(404).json({ msg: 'El usuario no existe.'});
     } catch (error) {
         const errObj = {};
