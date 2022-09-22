@@ -1,11 +1,8 @@
-const fs = require('fs');
 
 const listPictures = (req, res) => {
     try {
-        let data = fs.readFileSync(process.env.RUTA_DB_PRODUCT, 'utf-8');
-        let dataParsedProducts = JSON.parse(data);
         if(req.params.id){
-            const {id} = req.params;
+            const id = req.params.id;
             let findObject;
             if(findObject = dataParsedProducts.find(el => el.id == id)){
                 let pictures = findObject.gallery;
