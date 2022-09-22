@@ -1,4 +1,3 @@
-const fs = require('fs');
 
 //lista todos los productos, o lista por categoria.
 const listProduct = (req, res) => {

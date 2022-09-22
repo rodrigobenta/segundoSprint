@@ -19,15 +19,15 @@ app.use(cors());
 
 
 //RUTAS
-app.use('/api/v1/users', usersRoutes);
-app.use('/api/v1/products', productsRoutes);
-app.use('/api/v1/carts', cartsRouter);
-app.use('/api/v1/pictures', picturesRoutes);
+app.use('/api/v2/users', usersRoutes);
+app.use('/api/v2/products', productsRoutes);
+app.use('/api/v2/carts', cartsRouter);
+app.use('/api/v2/pictures', picturesRoutes);
 
 
 
 //ALIAS:
-app.post('/api/v1/login', login);
+app.post('/api/v2/login', login);
 
 
 
@@ -46,6 +46,7 @@ app.post('/*', (req,res)=>{
 app.delete('/*', (req,res)=>{
     res.status(400).json({ Mensaje: 'Bad Request.'})
 })
+
 
 app.listen(3001, async () => {
     sequelize.sync({force: true}) //danger

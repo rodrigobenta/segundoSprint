@@ -5,11 +5,11 @@ const { verifyCreateEditPictures, verifyRoleEditPicture } = require('../middlewa
 const router = express.Router();
 
 
-router.get('/', /* verifyJWT, */ listPictures);
-router.get('/:id' , /* verifyJWT, */listPictureById);
-router.post('/',/* verifyJWT, */ verifyRoleEditPicture ,verifyCreateEditPictures ,createPicture);
-router.put('/:id',/* verifyJWT,  */verifyRoleEditPicture ,verifyCreateEditPictures ,editPicture);
-router.delete('/:id',/* verifyJWT, */ verifyRoleEditPicture ,deletePicture);
+router.get('/', /* verifyJWT, */ /* listPictures */);
+router.get('/:id' , /* verifyJWT, *//* listPictureById */);
+router.post('/',/* verifyJWT, */ /* verifyRoleEditPicture ,verifyCreateEditPictures , */createPicture);
+router.put('/:id',/* verifyJWT,  *//* verifyRoleEditPicture ,verifyCreateEditPictures , */editPicture);
+router.delete('/:id',/* verifyJWT, */ /* verifyRoleEditPicture , */deletePicture);
 
 
 
