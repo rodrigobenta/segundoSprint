@@ -45,7 +45,7 @@ module.exports = (sequelize, dataTypes) => {
     const User = sequelize.define(alias,cols,config);
 
     User.associate = (models) => {
-        User.hasOne(models.Cart, {
+        User.belongsTo(models.Cart, {
             as: 'user_cart',
             foreignKey: 'fk_id_usuario',
             onDelete: 'RESTRICT',
