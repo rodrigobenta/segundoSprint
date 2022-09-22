@@ -182,7 +182,8 @@ const deleteProduct = (req, res) => {
         fs.writeFileSync(process.env.RUTA_DB_PRODUCT, JSON.stringify(newData));
         res.status(200).json({
             mensaje: 'Producto eliminado con exito',
-            oldData
+            oldData 
+            
         });
     } catch (error) {
         res.status(500).json({
