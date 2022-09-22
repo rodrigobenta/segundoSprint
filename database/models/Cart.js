@@ -1,41 +1,45 @@
+const User = require("./User");
 
 module.exports = (sequelize, dataTypes) => {
-    let alias = 'Cart';
+    const alias = 'Cart';
 
-    let fields = {
-        id_cart: {
+    const fields = {
+        fk_id_user:{
             type: dataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
+            allowNull: false
+        },
+        fk_id_product:{
+            type: dataTypes.INTEGER,
+            allowNull: true,
+        },
+        quantity:{
+            type: dataTypes.INTEGER,
             allowNull: false
         }
     }
 
-    let config = {
+    const config = {
         tableName: 'carts',
-        timestamp: false,
         createdAt: false,
-        updatedAt: false
+        updatedAt: true
     }
 
-    const Cart = sequelize.define(alias, fields, config);
+    const Cart = sequelize.define(alias,fields,config);
+    // Cart.associate = (models) => {
+    //     Cart.hasMany(models.Product,{
+    //         as: 'product_cart',
+    //         foreignKey: 'fk_id_product',
+    //         onUpdate: 'CASCADE',
+    //         onDelete: 'RESTRICT'
+    //     })
+    //     Cart.hasOne(models.User,{
+    //         as: 'user_cart',
+    //         foreignKey: 'fk_id_user',
+    //         onUpdate: 'CASCADE',
+    //         onDelete: 'RESTRICT'
+    //     })
+    // }
 
-    Cart.associate = (models) => {
-        Cart.hasOne(models.User, {
-            as: 'cart_user',
-            foreignKey: 'fk_id_usuario',
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE'
-        })
-        Cart.belongsToMany(models.Product,{
-            as: 'product_cart',
-            through: 'Cart_Product',//aca va el alias..
-            foreignKey: 'fk_id_cart',
-            otherKey: 'fk_id_producto',
-            onUpdate: 'CASCADE',
-            onDelete: 'RESTRICT'
-        })
-    }
 
     return Cart;
 }

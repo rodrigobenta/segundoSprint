@@ -45,12 +45,16 @@ module.exports = (sequelize, dataTypes) => {
     const User = sequelize.define(alias,cols,config);
 
     User.associate = (models) => {
-        User.belongsTo(models.Cart, {
-            as: 'user_cart',
-            foreignKey: 'fk_id_usuario',
-            onDelete: 'RESTRICT',
-            onUpdate: 'CASCADE'
-        })
+
+        User.belongsToMany(models.Product,{
+            as: 'product_user',
+            through: 'Cart',
+            foreignKey: 'fk_id_user',
+            otherkey: 'fk_id_product',
+            onUpdate: 'CASCADE',
+            onDelete: 'RESTRICT'
+
+
     }
 
 
