@@ -25,20 +25,6 @@ module.exports = (sequelize, dataTypes) => {
     }
 
     const Cart = sequelize.define(alias,fields,config);
-    // Cart.associate = (models) => {
-    //     Cart.hasMany(models.Product,{
-    //         as: 'product_cart',
-    //         foreignKey: 'fk_id_product',
-    //         onUpdate: 'CASCADE',
-    //         onDelete: 'RESTRICT'
-    //     })
-    //     Cart.hasOne(models.User,{
-    //         as: 'user_cart',
-    //         foreignKey: 'fk_id_user',
-    //         onUpdate: 'CASCADE',
-    //         onDelete: 'RESTRICT'
-    //     })
-    // }
 
     return Cart;
 }
