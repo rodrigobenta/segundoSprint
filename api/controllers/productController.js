@@ -1,27 +1,50 @@
 const fs = require('fs');
+const db= require('../../database/models');
 
 //lista todos los productos, o lista por categoria.
-const listProduct = (req, res) => {
+const listProduct = async (req, res) => {
+   
+console.log("hola")
+
+
     try {
-        let data = fs.readFileSync(process.env.RUTA_DB_PRODUCT, 'utf-8');
-        let dataParsed = JSON.parse(data);
-        const {category} = req.query;
-        if(!category) res.status(200).json(dataParsed);
-        else{
-        const dataToShow = dataParsed.filter(elm => elm.category.toLowerCase() == category.toLowerCase());
-            if (!dataToShow) {
-                return res.status(404).json({
-                    mensaje: 'el producto no existe'
-                });
-            }
-            else res.status(200).json({dataToShow});
-        }
+        const products = await db.Product.findAll({
+            include: [
+                {association: 'user_cart', required: true}
+                //required: true //esto hace un inner join, sino es un left join nomas.
+            ]
+           
+        }).then((data)=>{
+            console.log(data);
+        })
+      
+        res.status(200).send(users);
+    } catch (error) {
+        res.status(500).send({msg: 'Server error'})
+    }
+
+
+
+/*
+        //let data = fs.readFileSync(process.env.RUTA_DB_PRODUCT, 'utf-8');
+       // let dataParsed = JSON.parse(data);
+        //const {category} = req.query;
+       // if(!category) res.status(200).json(dataParsed);
+       //else{
+        //const dataToShow = dataParsed.filter(elm => elm.category.toLowerCase() == category.toLowerCase());
+           // if (!dataToShow) {
+              //  return res.status(404).json({
+                    //mensaje: 'el producto no existe'
+               // });
+            //}
+            //else res.status(200).json({dataToShow});
+        //}
     } catch (error) {
         console.log(error);
         res.status(500).json({
             mensaje: 'Server error'
         });
-    }
+    }*/
 }
 
 const listProductByID = (req, res) => {
