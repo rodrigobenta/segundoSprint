@@ -43,11 +43,17 @@ module.exports = (sequelize, dataTypes) => {
             as: 'product_picture',
             foreignKey: 'fk_id_product'
         })
-        Product.belongsToMany(models.Cart,{
-            as: 'cart_product',
-            through: 'Cart_Product',
+        Product.belongsToMany(models.User,{
+            as: 'user_product',
+            through: 'Cart',
             foreignKey: 'fk_id_product',
-            otherKey: 'fk_id_cart',
+            otherKEY: 'fk_id_user',
+            onUpdate: 'CASCADE',
+            onDelete: 'RESTRICT'
+        })
+        Product.belongsTo(models.Category,{
+            as: "category_product",
+            foreignKey: 'fk_id_category',
             onUpdate: 'CASCADE',
             onDelete: 'RESTRICT'
         })

@@ -1,0 +1,1610 @@
+openapi: 3.0.0
+info:
+  title: Mi E-Commerce
+  version: 1.0.0
+  description: |-
+    Esta API esta orientada a interactuar con el front de una pagina web de E-Commerce del grupo Cencosud SA.
+    Git Repo: https://github.com/rodrigobenta/primerSprint  
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Entorno Desarrollo
+
+tags:
+  - name: usuarios
+    description: Todos los endpoints de usuarios
+  - name: productos
+    description: Todos los endpoints de productos
+  - name: pictures
+    description: Todos los endpoints de pictures
+  - name: carts
+    description: Todos los endpoints de carts
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+
+  /users/login/:
+    post:
+      tags: 
+        - usuarios
+      summary: Login al sistema
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              
+      responses: 
+        '200':
+          description: logueado con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      username:
+                        type: string
+                  token:
+                    type: string
+        '404':
+          description: No se encuentra el usuario
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                    
+  /login/:
+    post:
+      tags: 
+        - usuarios
+      summary: Login al sistema
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              
+      responses: 
+        '200':
+          description: logueado con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      username:
+                        type: string
+                  token:
+                    type: string
+        '404':
+          description: No se encuentra el usuario
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string                  
+  
+  /users/:
+    get:
+      tags: 
+        - usuarios
+      summary: Lista los usuarios
+      security:
+        - bearerAuth: []
+      
+      responses: 
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                properties:
+                  list:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      email:
+                        type: string
+                      username:
+                        type: string
+                      password:
+                        type: string
+                      firstname:
+                        type: string
+                      lastname:
+                        type: string
+                      profilepic:
+                        type: string
+                      role:
+                        type: string
+                      cart:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product:
+                              type: number
+                            quantity:
+                              type: number
+        
+        '401':
+          description: No posee los permisos para acceder a la funcionalidad
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje:
+                    type: string
+        
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje:
+                    type: string
+    post:
+      tags: 
+        - usuarios
+      summary: Crear un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                profilepic:
+                  type: string
+                role:
+                  type: string
+
+      responses: 
+        '201':
+          description: Usuario creado con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  userCreated:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      email:
+                        type: string
+                      username:
+                        type: string
+                      firstname:
+                        type: string
+                      lastname:
+                        type: string
+                      profilepic:
+                        type: string
+                      role:
+                        type: string
+                      cart:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product:
+                              type: number
+                            quantity:
+                              type: number
+
+        '400':
+          description: Username, Email o Campos faltantes
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                    
+  /users/{id}:
+    get:
+      tags: 
+        - usuarios
+      summary: Lista el usuario pasado por id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+          required: true
+          description: Id del usuario
+
+      responses: 
+        '200':
+          description: Usuario listado con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  userListed:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      email:
+                        type: string
+                      username:
+                        type: string
+                      password:
+                        type: string
+                      firstname:
+                        type: string
+                      lastname:
+                        type: string
+                      profilepic:
+                        type: string
+                      role:
+                        type: string
+                      cart:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product:
+                              type: number
+                            quantity:
+                              type: number
+
+        '404':
+          description: No se encuentra el usuario
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                    
+    put:
+      tags: 
+        - usuarios
+      summary: Edita un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Id del usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                profilepic:
+                  type: string
+      
+      responses: 
+        '200':
+          description: Usuario editado con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  userEdited:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      username:
+                        type: string
+                      password:
+                        type: string
+                      firstname:
+                        type: string
+                      lastname:
+                        type: string
+                      profilepic:
+                        type: string
+                      
+        
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+          
+        '404':
+          description: No se encuentra el usuario a editar
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+    
+
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                    
+    delete:
+      tags: 
+        - usuarios
+      summary: Elimina un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Id del usuario
+      
+      responses: 
+        '200':
+          description: Usuario eliminado con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  userDeleted:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      username:
+                        type: string
+                      password:
+                        type: string
+                      firstname:
+                        type: string
+                      lastname:
+                        type: string
+                      profilepic:
+                        type: string
+                      
+        
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+          
+        '404':
+          description: No se encuentra el usuario a eliminar
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+  
+  /users/{id}/cart:
+    get:
+      tags: 
+        - usuarios
+      summary: Lista el cart de un usuario determinado
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+          required: true
+          description: Id del usuario
+
+      responses: 
+        '200':
+          description: Cart listado con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  userListed:
+                    type: object
+                    properties:
+                      product:
+                        type: number
+                      quantity:
+                        type: number
+                        
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+
+    put:
+      tags: 
+        - usuarios
+      summary: Actualiza el cart del usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Id del usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              items:
+                type: object
+                properties:
+                  product:
+                    type: number
+                  quantity:
+                    type: number
+
+      responses: 
+        '200':
+          description: cart actualizado
+          content:
+            application/json:
+              schema:
+                properties:
+                  user:
+                    type: number
+                  gallery:
+                        type: array
+                        items:
+                          type: object 
+                          properties:
+                            product:
+                              type: number
+                            quantity:
+                              type: number
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+                    
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+  
+  /products:
+    get:
+      tags: 
+        - productos
+      summary: Lista todos los productos 
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+          required: false
+          description: busca los productos segun su categoria, sino, por defecto, lista todos los productos
+      
+      responses: 
+        '200':
+          description: Listado de productos
+          content:
+            application/json:
+              schema:
+                properties:
+                  list:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        title:
+                          type: string
+                        price:
+                          type: number
+                        description:
+                          type: string
+                        image:
+                          type: string
+                        gallery:
+                          type: array
+                          items:
+                            type: object 
+                            properties:
+                              picture_id:
+                                type: number
+                              picture_url:
+                                type: string
+                              description:
+                                type: string
+                        category:
+                          type: string        
+                        mostwanted:
+                          type: boolean
+                        stock:
+                          type: number
+
+        '404':
+          description: Productos con dicha categoria no encontrados
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string                      
+      
+        
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+    post:
+      tags: 
+        - productos
+      summary: Crea un producto 
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  type: string
+                price:
+                  type: number
+                description:
+                  type: string
+                image:
+                  type: string
+                gallery:
+                  type: array
+                  items:
+                    type: number 
+                category:
+                  type: string
+                mostwanted:
+                  type: boolean
+                stock:
+                  type: number
+      
+      responses: 
+        '201':
+          description: Producto creado con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  list:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      title:
+                        type: string
+                      price:
+                        type: number
+                      description:
+                        type: string
+                      image:
+                        type: string
+                      category:
+                        type: string
+                      gallery:
+                        type: array
+                        items:
+                            type: number
+                      mostwanted:
+                        type: boolean
+                      stock:
+                        type: number
+
+        '400':
+          description: Faltan campos necesarios para crear el producto, o el producto ya existe.
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+        
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+
+  /products/{id}:
+    put:
+      tags: 
+        - productos
+      summary: Edita un producto identificado con id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Id del producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  type: string
+                price:
+                  type: number
+                description:
+                  type: string
+                image:
+                  type: string
+                gallery:
+                  type: array
+                  items:
+                    type: number 
+                category:
+                  type: string
+                mostwanted:
+                  type: boolean
+                stock:
+                  type: number   
+
+      responses: 
+        '200':
+          description: Producto editado con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  list:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      title:
+                        type: string
+                      price:
+                        type: number
+                      description:
+                        type: string
+                      image:
+                        type: string
+                      category:
+                        type: string
+                      gallery:
+                        type: array
+                        items:
+                          type: object 
+                          properties:
+                            picture_id:
+                              type: number
+                            picture_url:
+                              type: string
+                            description:
+                              type: string
+                      mostwanted:
+                        type: boolean
+                      stock:
+                        type: number
+                      
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                  ok:
+                    type: boolean
+                    
+        '404':
+          description: Producto a editar no encontrado
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                  ok:
+                    type: boolean
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                  ok:
+                    type: boolean
+
+    delete:
+      tags: 
+        - productos
+      summary: Elimina un producto identificado con id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Id del producto
+      
+      responses: 
+        '200':
+          description: Producto eliminado con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  list:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      title:
+                        type: string
+                      price:
+                        type: number
+                      description:
+                        type: string
+                      image:
+                        type: string
+                      category:
+                        type: string
+                      gallery:
+                        type: array
+                        items:
+                          type: object 
+                          properties:
+                            picture_id:
+                              type: number
+                            picture_url:
+                              type: number
+                      mostwanted:
+                        type: boolean
+                      stock:
+                        type: number
+                      
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                  ok:
+                    type: boolean
+                    
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                  ok:
+                    type: boolean
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                  ok:
+                    type: boolean
+    get:
+      tags: 
+        - productos
+      summary: Busca el producto identificado con id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Id del producto
+  
+      
+      responses: 
+        '200':
+          description: Producto encontrado con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  list:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      title:
+                        type: string
+                      price:
+                        type: number
+                      description:
+                        type: string
+                      image:
+                        type: string
+                      category:
+                        type: string
+                      gallery:
+                        type: array
+                        items:
+                          type: object 
+                          properties:
+                            picture_id:
+                              type: number
+                            picture_url:
+                              type: number
+                      mostwanted:
+                        type: boolean
+                      stock:
+                        type: number
+                  
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string                      
+      
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+
+  /products/search:
+    get:
+      tags: 
+        - productos
+      summary: Busca los productos segun una palabra clave
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Palabra clave a buscar
+      
+      responses: 
+        '200':
+          description: Productos encontrados con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  list:
+                    type: array
+                    items:
+                      type: object
+                    properties:
+                      id:
+                        type: number
+                      title:
+                        type: string
+                      price:
+                        type: number
+                      description:
+                        type: string
+                      image:
+                        type: string
+                      category:
+                        type: string
+                      gallery:
+                        type: array
+                        items:
+                          type: object 
+                          properties:
+                            picture_id:
+                              type: number
+                            picture_url:
+                              type: number
+                      mostwanted:
+                        type: boolean
+                      stock:
+                        type: number
+                        
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+                              
+        '404':
+          description: Productos no encontrados
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+                    
+  /products/mostwanted:
+    get:
+      tags: 
+        - productos
+      summary: Lista los productos mas buscados
+      security:
+        - bearerAuth: []
+      
+      responses: 
+        '200':
+          description: Productos encontrados con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  list:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      title:
+                        type: string
+                      price:
+                        type: number
+                      description:
+                        type: string
+                      image:
+                        type: string
+                      category:
+                        type: string
+                      gallery:
+                        type: array
+                        items:
+                          type: object 
+                          properties:
+                            picture_id:
+                              type: number
+                            picture_url:
+                              type: number
+                      mostwanted:
+                        type: boolean
+                      stock:
+                        type: number
+                  
+        '500':
+          description:  server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+                    
+  /products/{id}/pictures:
+    get:
+      tags:
+        - pictures
+      summary: Lista las fotos del producto identificado con id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+          required: true
+          description: Id del producto
+          
+      responses: 
+        '200':
+          description: Fotos listadas con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  list:
+                    type: array
+                    items:
+                      type: object
+                    properties:
+                      id:
+                        type: number
+                        
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                    
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+  
+  /pictures:
+    post:
+      tags: 
+        - pictures
+      summary: Crea una nueva foto para un producto 
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                picture_url:
+                  type: string
+                description:
+                  type: string
+      
+      responses: 
+        '201':
+          description: Foto creada con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                      id:
+                        type: number
+                      url:
+                        type: string
+                      description:
+                        type: string
+  
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+        
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+    
+    get:
+      tags: 
+        - pictures
+      summary: Busca las fotos de un producto identificado con un Id 
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: product
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Id del producto
+      
+      responses: 
+        '200':
+          description: Fotos listadas con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  
+                      id:
+                        type: number
+                      url:
+                        type: string
+                      description:
+                        type: string
+
+        '400':
+          description:  bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+        
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+                    
+  /pictures/{id}:                 
+    delete:
+      tags: 
+        - pictures
+      summary: Borra la foto identificada con id 
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Id de la foto
+      
+      responses: 
+        '200':
+          description: Foto eliminada con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  
+                      id:
+                        type: number
+                      url:
+                        type: string
+                      description:
+                        type: string
+                      
+        '400':
+          description:  bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+        
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+
+    put:
+      tags: 
+        - pictures
+      summary: Edita una foto identificada con Id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Id de la foto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                properties:
+                    picture_url:
+                      type: string
+                    description:
+                      type: string
+
+      responses: 
+        '200':
+          description: Foto editada con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  list:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      title:
+                        type: string
+                      price:
+                        type: number
+                      description:
+                        type: string
+                      image:
+                        type: string
+                      category:
+                        type: string
+                      gallery:
+                        type: array
+                        items:
+                          type: object 
+                          properties:
+                            picture_id:
+                              type: number
+                            picture_url:
+                              type: string
+                            description:
+                              type: string
+                      mostwanted:
+                        type: boolean
+                      stock:
+                        type: number
+                      
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                  ok:
+                    type: boolean
+                    
+        '404':
+          description: Foto no encontrada
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                  ok:
+                    type: boolean
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                  ok:
+                    type: boolean
+                    
+    get:
+      tags: 
+        - pictures
+      summary: Busca la foto identificada con Id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: busca producto
+      
+      responses: 
+        '200':
+          description: Foto encontrada con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: number
+                  url:
+                    type: string
+                  description:
+                    type: string
+                      
+        '400':
+          description:  bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+        '404':
+          description:  Not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+        
+        '500':
+          description:  server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+
+  /carts/{id}:
+    get:
+      tags: 
+        - carts
+      summary: Busca el carrito del usuario identificado con id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Id del usuario
+              
+      responses: 
+        '200':
+          description: carrito encontrado con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  carrito:
+                      type: array
+                      items:
+                        type: object 
+                        properties:
+                          product:
+                            type: object
+                            properties:
+                              id:
+                                type: number
+                              title:
+                                type: string
+                              price:
+                                type: number
+                              description:
+                                type: string
+                              image:
+                                type: string
+                              gallery:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    picture_id:
+                                      type: number
+                                    picture_url:
+                                      type: string
+                                    description:
+                                      type: string
+                              category:
+                                type: string
+                              mostwanted:
+                                type: string
+                              stock:
+                                type: number
+                          quantity:
+                            type: number
+
+        '404':
+          description:  Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+                    
+    put:
+      tags: 
+        - carts
+      summary: Actualiza el carrito del usuario identificado con id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Id del usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              items:
+                type: object
+                properties:
+                  product:
+                    type: number
+                  quantity:
+                    type: number
+              
+      responses: 
+        '200':
+          description: Actualizado con exito
+          content:
+            application/json:
+              schema:
+                properties:
+                  user:
+                    type: number
+                  gallery:
+                        type: array
+                        items:
+                          type: object 
+                          properties:
+                            product:
+                              type: number
+                            quantity:
+                              type: number
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
+                    
+        '404':
+          description:  Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                properties:
+                  Mensaje: 
+                    type: string
