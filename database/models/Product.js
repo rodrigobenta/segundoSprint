@@ -9,16 +9,17 @@ module.exports = (sequelize, dataTypes) => {
             autoIncrement: true,
             allowNull: false
         },
-        url:{
+        title:{
             type: dataTypes.STRING(50),
             unique: true,
             allowNull: false
         },
+        stock: {
+            type: dataTypes.INTEGER,
+            allowNull: false
+        },
         description:{
             type: dataTypes.STRING(50)
-        },
-        image:{
-            type: dataTypes.STRING(255)
         },
         category:{
             type: dataTypes.STRING(50)
