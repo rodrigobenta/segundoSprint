@@ -1,5 +1,8 @@
 const fs = require("fs");
 const direcionBaseUsuarios= process.env.RUTA_DB_USER;
+const db = require('../../database/models');
+const { param } = require("../routes/cartsRoutes");
+
 
 function getDataU(direccion){
     try {
@@ -22,48 +25,51 @@ function getCart(usuarioID){
     }
 }
 
-const cartOfId = (req, res) => {
+const cartOfId = async(req, res) => {
     try {
-        let data = fs.readFileSync(process.env.RUTA_DB_PRODUCT, 'utf-8');
-        let dataParsed = JSON.parse(data);
-        let id = Number(req.params.id);
-        let usuarios = getDataU(direcionBaseUsuarios);
-        let existe= false;
-        let carrito;
-        if(usuarios.find(usuarios => usuarios.id === id)){
-        usuarios.forEach(element => {
-            if(element.id == id){
-                existe = true;
-                carrito = getCart(id);
-                let cartObjects = [];
-                let prodCarro;
-                    carrito.forEach(el => {
-                        let obj= {};
-                        prodCarro = dataParsed.find(dataParsed => dataParsed.id == el.product);
-                        obj['product'] = prodCarro; 
-                        obj['quantity'] = el.quantity;
-                        cartObjects.push(obj);
-                    })
-                res.status(200).json({
-                    Carrito: cartObjects
-                });
-            }
-        });
-    }
-    else return res.status(404).json({msg: 'Usuario no encontrado'});                            
+        const userEdit = await db.User.findByPk(Number(req.params.id));
+        if(userEdit){
+            const cartOfUser = await db.Cart.findAll({where: {fk_id_user: (req.params.id)}})
+            res.status(200).json(cartOfUser);
+        }else res.status(404).json({ msg: 'No encuentra el usuario'});
     } catch (error) {
         res.status(500).json({Mensaje: "Server error"});
-    }
+    };
 };
 
-const updateCart = (req, res) => {
+const updateCart = async(req, res) => {
 try {
-    let id = Number(req.params.id);
-    dataUsers = getDataU(direcionBaseUsuarios);
-    let indiceU = dataUsers.findIndex((el)=> el.id === id )
-    if (indiceU !== -1) {
-        let carrito = getCart(id);
-        let cartNuevo = req.body;
+    const id = req.params.id;
+    const body = req.body;
+
+    
+    
+    await db.Cart.upsert({
+        fk_id_user: id,
+        fk_id_product: body.id_product,
+        quantity: body.quantity
+    })
+
+
+
+/* 
+        --id   -- producto   --cantidad
+        1              1        3
+        1              2        4
+        2              1        1
+        3              3        2
+ */
+/// 1    1    4
+//  1    5    1
+//  1    2    0
+
+/* 
+        --id   -- producto   --cantidad
+        1              1        4
+        1              5        1
+        2              1        1
+        3              3        2
+ */
         carrito = cartNuevo;
         dataUsers[indiceU].cart = carrito;
         fs.writeFileSync(direcionBaseUsuarios, JSON.stringify(dataUsers));
