@@ -19,15 +19,15 @@ app.use(cors());
 
 
 //RUTAS
-app.use('/api/v1/users', usersRoutes);
-app.use('/api/v1/products', productsRoutes);
-app.use('/api/v1/carts', cartsRouter);
-app.use('/api/v1/pictures', picturesRoutes);
+app.use('/api/v2/users', usersRoutes);
+app.use('/api/v2/products', productsRoutes);
+app.use('/api/v2/carts', cartsRouter);
+app.use('/api/v2/pictures', picturesRoutes);
 
 
 
 //ALIAS:
-app.post('/api/v1/login', login);
+app.post('/api/v2/login', login);
 
 
 
@@ -48,6 +48,6 @@ app.delete('/*', (req,res)=>{
 })
 
 app.listen(3000, async () => {
-    sequelize.sync({force: true}) //danger
+    sequelize.sync(/* {alter: true} */) //danger{alter: false}
     console.log("Server corriendo en puerto 3000")
 })

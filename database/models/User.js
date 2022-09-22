@@ -1,7 +1,7 @@
 module.exports = (sequelize, dataTypes) => {
     let alias = 'User';
     let cols = {
-        id_usuario: {
+        id_user: {
             type: dataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
@@ -31,7 +31,7 @@ module.exports = (sequelize, dataTypes) => {
         },
         profilepic: {
             type: dataTypes.STRING(50),
-            allowNull: false
+            allowNull: true
         }
     }
 
@@ -53,8 +53,6 @@ module.exports = (sequelize, dataTypes) => {
             otherkey: 'fk_id_product',
             onUpdate: 'CASCADE',
             onDelete: 'RESTRICT'
-
-
     })
     }
 

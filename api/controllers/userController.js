@@ -1,7 +1,15 @@
-const fs = require('fs');
+const express = require('express');
+const { sequelize } = require('../../database/models')
+const app = express();
+const db = require('../../database/models')
 const jwt = require('../../helpers/generateJWT')
 
 const login = async (req,res) => {
+    try {
+        
+    } catch (error) {
+        
+    }
     // try {
     //     let data = fs.readFileSync(process.env.RUTA_DB_USER, 'utf-8');
     //     data = JSON.parse(data);
@@ -29,102 +37,84 @@ const login = async (req,res) => {
     // }
 }
 
-const listUsers = (req,res) => {
+const listUsers = async (req,res) => {
     try {
-    
-        // let usersSinPass = users.map(el => {
-        //     el.password = "**********";
-        //     return el;
-        // })
-        // res.status(200).json({
-        //     listaUsers: usersSinPass
-        // });
+        const users = await db.User.findAll(
+                    {
+                        attributes: {
+                        exclude: 'password'
+                        }
+                    });
+        if(users>0) res.status(200).json({ Usuario: users});
+        else res.status(404).json({msg: 'No existen usuarios en la BD'})
     } catch (error) {
-       //res.status(500).json({ Mensaje: 'Server error.' });
+        res.status(500).json({ msg: 'Server error.' });
     }
 }
 
-const listUserById = (req,res) => {
+const listUserById = async (req,res) => {
     try {
-        
-        // if(user = users.find(el => el.id === Number(req.params.id))){
-        //     user.password = "*********"
-        //     return res.status(200).json({
-        //         User: user
-        //     });
-        // }
-        //return res.status(404).json({ Mensaje:'user not found'});
+        const users = await db.User.findByPk(req.params.id,
+                    {
+                        attributes: {
+                        exclude: 'password'
+                        }
+                    });
+        if(users) res.status(200).json({ Usuario: users});
+        else res.status(404).json({msg: 'No existe dicho usuario en la BD'})
     } catch (error) {
-        //res.status(500).json({ Mensaje: 'Server error.' });
+        const errObj = {};
+            error.errors.map( er => {
+            errObj[er.path] = er.message;
+            })
+        if(errObj) res.status(500).json(errObj);
+        else res.status(500).json({ msg: 'Server error.' });
     }
 }
 
-const createUser = (req,res) => {
-    
-    // let dataParsed = JSON.parse(data);
-    // const {email, username, password, firstname, lastname, role} = req.body;
-    
-    // const cart = [];
-    // const newUser = {id, email, username, password, firstname, lastname, role, cart};
-    // if(req.profilepic){
-    //     let profilepic = req.body.profilepic;
-    //     newUser = {id, email, username, password, firstname, lastname, profilepic, role, cart};
-    // }
-    // try {
-    //     let dbUser = fs.readFileSync(process.env.RUTA_DB_USER, 'utf-8');
-    //     let users = JSON.parse(dbUser);
-    //     users.push(newUser);
-        
-    //     res.status(201).json(newUser);
-    // } catch (error) {
-    //     res.status(500).json({ Mensaje: 'Server error.' });
-    // }
+const createUser = async (req,res) => {
+    try {
+        const body = req.body;
+        const create = await db.User.create(body)
+        res.status(200).json({usuario: create});
+    } catch (error) {
+        const errObj = {};
+            error.errors.map( er => {
+            errObj[er.path] = er.message;
+            })
+        if(errObj) res.status(500).json(errObj);
+        else res.status(500).json({ msg: 'Server error.' });
+    }
 }
 
-const editUserById = (req,res) => {
-    // try{
-    //     let {...propiedades} = req.body;
-    //     let id = Number(req.params.id);
-    //     let newEl;
-    //     let dbUser = fs.readFileSync(process.env.RUTA_DB_USER, 'utf-8');
-    //     let users = JSON.parse(dbUser);
-    //     let userEdited = users.find(el => el.id === id);
-    //     if(userEdited) {
-    //         const usersUpdate = users.map(elem => {
-    //                 if (Number(elem.id) == id){
-    //                     newEl = {...elem, ...propiedades};
-    //                     return newEl;
-    //                 }
-    //                 else return elem;
-    //                 })
-    //         fs.writeFileSync(process.env.RUTA_DB_USER, JSON.stringify(usersUpdate));
-    //         res.status(200).json({
-    //             Mensaje: "propiedades editadas",
-    //             data: {...propiedades}
-    //         });
-    //     }else{
-    //         return res.status(404).json({ Mensaje: 'El usuario no existe.'})
-    //     }
-    // } catch(error){
-    //     res.status(500).json({ Mensaje: 'Server error.' });
-    // }
+const editUserById = async (req,res) => {
+    try {
+        const body = req.body;
+        const userEdit = await db.User.findByPk(Number(req.params.id));
+        await db.User.update(body,{ where: { id_user: Number(req.params.id) }});
+        if(userEdit) res.status(200).json(userEdit);
+        else res.status(404).json({ msg: 'El usuario no existe.'});
+    } catch (error) {
+        const errObj = {};
+            error.errors.map( er => {
+            errObj[er.path] = er.message;
+            })
+        if(errObj) res.status(500).json(errObj);
+        else res.status(500).json({ msg: 'Server error.' });
+    }
 }
 
-const deleteUserById = (req,res) => {
-    // let id = Number(req.params.id);
-    // try {
-    //     let dbUser = fs.readFileSync(process.env.RUTA_DB_USER, 'utf-8');
-    //     let users = JSON.parse(dbUser);
-    //     let userDeleted = users.filter(el => el.id === Number(id));
-    //     if (userDeleted.length > 0){
-    //         let newUsers = users.filter(el => el.id !== Number(id));
-    //         fs.writeFileSync(process.env.RUTA_DB_USER, JSON.stringify(newUsers));
-    //         res.status(200).json({userDeleted})
-    //     }
-    //     else return res.status(404).json({ Mensaje: 'El usuario no existe.'})
-    // } catch (error) {
-    //     res.status(500).json({ Mensaje: 'Server error.' });
-    // }
+const deleteUserById = async (req,res) => {
+    try {
+        const userDeleted = await db.User.findByPk(Number(req.params.id));
+        await db.User.destroy({where:{
+                    id_user: req.params.id
+                }})
+        if(userDeleted) res.status(200).json({userDeleted});
+        else return res.status(404).json({ msg: 'El usuario no existe.'});
+    } catch (error) {
+        res.status(500).json({ msg: 'Server error.' });
+    }
 }
 
 module.exports = {
