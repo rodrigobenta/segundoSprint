@@ -112,10 +112,13 @@ const editUserById = async (req,res) => {
 const deleteUserById = async (req,res) => {
     try {
         const userDeleted = await db.User.findByPk(Number(req.params.id));
-        await db.User.destroy({where:{
-                    id_user: req.params.id
-                }})
-        if(userDeleted) res.status(200).json({userDeleted});
+        
+        if(userDeleted){
+            await db.User.destroy({where:{
+                id_user: req.params.id
+            }})
+            res.status(200).json({userDeleted});
+        } 
         else return res.status(404).json({ msg: 'El usuario no existe.'});
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });
