@@ -29,9 +29,14 @@ module.exports = (sequelize, dataTypes) => {
             type: dataTypes.STRING(50),
             allowNull: false
         },
+        role: {
+            type: dataTypes.STRING(50),
+            allowNull: false
+        },
         profilepic: {
             type: dataTypes.STRING(50),
-            allowNull: true
+            allowNull: true,
+            defaultValue: 'guest'
         }
     }
 
