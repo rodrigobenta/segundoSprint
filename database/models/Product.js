@@ -21,9 +21,6 @@ module.exports = (sequelize, dataTypes) => {
         description:{
             type: dataTypes.STRING(50)
         },
-        category:{
-            type: dataTypes.STRING(50)
-        },
         mostwanted:{
             type: dataTypes.TINYINT(1)
         }
