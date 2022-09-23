@@ -27,26 +27,7 @@ console.log("hola")
 
 
 
-/*
-        //let data = fs.readFileSync(process.env.RUTA_DB_PRODUCT, 'utf-8');
-       // let dataParsed = JSON.parse(data);
-        //const {category} = req.query;
-       // if(!category) res.status(200).json(dataParsed);
-       //else{
-        //const dataToShow = dataParsed.filter(elm => elm.category.toLowerCase() == category.toLowerCase());
-           // if (!dataToShow) {
-              //  return res.status(404).json({
-                    //mensaje: 'el producto no existe'
-               // });
-            //}
-            //else res.status(200).json({dataToShow});
-        //}
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            mensaje: 'Server error'
-        });
-    }*/
+
 }
 
 const listProductByID = (req, res) => {
@@ -194,27 +175,22 @@ const editProduct = (req, res) => {
 }
 
 const deleteProduct = (req, res) => {
+    
     try {
-        const { id } = req.params;
-        let dataToParse = fs.readFileSync(process.env.RUTA_DB_PRODUCT, 'utf-8');
-        let data = JSON.parse(dataToParse);
-        let oldData = data.filter(el => el.id === Number(id));
-        if(!oldData){
-            res.status(404).json({
-                mensaje: 'Producto no encontrado'
-            });
-        }
-        const newData = data.filter(el => el.id !== Number(id));
-        fs.writeFileSync(process.env.RUTA_DB_PRODUCT, JSON.stringify(newData));
-        res.status(200).json({
-            mensaje: 'Producto eliminado con exito',
-            oldData 
+        const userDeleted = await db.Product.findByPk(Number(req.params.id));
+        const findProductCar = await db.Cart.findOne();
+        const findPictureProduct = await db.Picture.findOne();
 
-        });
+        if()
+
+
+        await db.Product.destroy({where:{
+                    id_user: req.params.id
+                }})
+        if(userDeleted) res.status(200).json({userDeleted});
+        else return res.status(404).json({ msg: 'El usuario no existe.'});
     } catch (error) {
-        res.status(500).json({
-            mensaje: 'Server error'
-        });
+        res.status(500).json({ msg: 'Server error.' });
     }
 }
 
