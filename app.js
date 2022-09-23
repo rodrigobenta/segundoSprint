@@ -1,16 +1,16 @@
 
-const { sequelize } = require('../database/models')
+const { sequelize } = require('./database/models')
 require('dotenv').config();
 const express = require('express');
-const usersRoutes = require('../api/routes/userRoutes');
-const productsRoutes = require('../api/routes/productRoute');
-const cartsRouter = require('../api/routes/cartsRoutes');
-const {login} = require('../api/controllers/userController');
-const picturesRoutes = require('../api/routes/picturesRoutes');
+const usersRoutes = require('./api/routes/userRoutes');
+const productsRoutes = require('./api/routes/productRoute');
+const cartsRouter = require('./api/routes/cartsRoutes');
+const {login} = require('./api/controllers/userController');
+const picturesRoutes = require('./api/routes/picturesRoutes');
 const app = express();
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
-const swaggerDocument = YAML.load('../swagger.yaml');
+const swaggerDocument = YAML.load('./swagger.yaml');
 const cors = require('cors');
 app.use(express.json());
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

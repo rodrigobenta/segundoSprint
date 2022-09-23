@@ -8,8 +8,8 @@ const verifyJWT = (req, res, next) => {
         else bearer = bearer.substring(index+1,bearer.length);
         const token = bearer;
         const payload = jwt.verify(token, process.env.JWT_PASS);
-        req.role = payload.role;
-        req.id = payload.id;
+        req.role = payload.role; //asignamos role al request para pasarlo a la proxima funcion
+        req.id = payload.id_user; //asignamos id al request para pasarlo a la proxima funcion. id_user se extrae del token.
         next();
     } catch (error) {
         return res.status(401).json({

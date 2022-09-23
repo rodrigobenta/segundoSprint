@@ -5,7 +5,7 @@ module.exports = {
     "database": "ecommerce",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "port": "3000"
+    "port" : "3001"
   },
   "test": {
     "username": "root",
