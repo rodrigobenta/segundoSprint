@@ -47,7 +47,7 @@ app.delete('/*', (req,res)=>{
     res.status(400).json({ Mensaje: 'Bad Request.'})
 })
 
-
+<<<<<<<<< Temporary merge branch 1:api/app.js
 app.listen(3000, async () => {
     sequelize.sync({/* alter: true */}) //danger
     console.log("Server corriendo en puerto 3000")

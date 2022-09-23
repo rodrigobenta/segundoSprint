@@ -58,7 +58,6 @@ const listUsers = async (req,res) => {
 
 const listUserById = async (req,res) => {
     try {
-        console.log(req.params.id);
         const user = await db.User.findByPk(Number(req.params.id),
                     {
                         attributes: {
