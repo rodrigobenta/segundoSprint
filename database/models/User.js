@@ -18,7 +18,7 @@ module.exports = (sequelize, dataTypes) => {
             allowNull: false
         },
         password: {
-            type: dataTypes.STRING(50),
+            type: dataTypes.STRING(150),
             allowNull: false
         },
         firstname: {
@@ -52,7 +52,7 @@ module.exports = (sequelize, dataTypes) => {
             foreignKey: 'fk_id_user',
             otherkey: 'fk_id_product',
             onUpdate: 'CASCADE',
-            onDelete: 'RESTRICT'
+            onDelete: 'CASCADE'
     })
     }
 
