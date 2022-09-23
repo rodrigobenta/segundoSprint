@@ -84,7 +84,6 @@ const createUser = async (req,res) => {
         password = await bcrypt.hash(password, salt); //hash
         body['password'] = password; //le asigno la nueva password
         let create = await db.User.create(body);
-        //create['password'] = '**************';
         create['password'] = null;
         res.status(200).json({usuario: create});
     } catch (error) {
@@ -126,7 +125,6 @@ const editUserById = async (req,res) => {
 
 const deleteUserById = async (req,res) => {
     try {
-        ///const userDeleted = await db.User.findByPk(Number(req.params.id),{raw: true});
         let userDeleted;
         if(userDeleted = await db.User.findByPk(Number(req.params.id),{raw: true})){
             const {password, ...userShow} = userDeleted;

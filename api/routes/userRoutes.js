@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {login,listUsers, listUserById, createUser, editUserById, deleteUserById,} = require('../controllers/userController');
 const verifyJWT = require('../middleware/verifyJWT');
-const { createUserVerify, verifyRoleList, verifyRoleEdit} = require('../middleware/userMiddleware');
+const { createUserVerify, verifyRoleList, verifyRoleEdit, editUserVerify} = require('../middleware/userMiddleware');
 const { cartOfId, updateCart } = require('../controllers/cartsControllers');
 
 
@@ -10,7 +10,7 @@ const { cartOfId, updateCart } = require('../controllers/cartsControllers');
 router.get('/', verifyJWT, verifyRoleList, listUsers); 
 router.get('/:id', verifyJWT, verifyRoleList, listUserById);
 router.post('/', createUserVerify, createUser);
-router.put('/:id', verifyJWT, verifyRoleEdit, editUserById);
+router.put('/:id', verifyJWT, verifyRoleEdit, editUserVerify, editUserById);
 router.delete('/:id', verifyJWT, verifyRoleEdit, deleteUserById);
 router.post('/login', login);
 
