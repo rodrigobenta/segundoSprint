@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const createUserVerify = (req,res,next) =>{
-    const { email, username, password, firstname, lastname, profilepic, role} = req.body;
+    let { email, username, password, firstname, lastname, profilepic, role} = req.body;
     if((!email)|| (!username) || (!password) || (!firstname) || (!lastname))
         return res.status(400).json({Mensaje: 'Para crear un usuario debe contener todos los elementos'});
     if(profilepic)

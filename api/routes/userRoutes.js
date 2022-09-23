@@ -7,11 +7,11 @@ const { cartOfId, updateCart } = require('../controllers/cartsControllers');
 
 
 
-router.get('/', /*verifyJWT,*/ /* verifyRoleList, */ listUsers); 
-router.get('/:id', /*verifyJWT,*/ /* verifyRoleList, */ listUserById);
-router.post('/', /* createUserVerify, */ createUser);
-router.put('/:id', /*verifyJWT,*/ /* verifyRoleEdit, */ editUserById);
-router.delete('/:id', /*verifyJWT,*/ /* verifyRoleEdit, */ deleteUserById);
+router.get('/', verifyJWT, verifyRoleList, listUsers); 
+router.get('/:id', verifyJWT, verifyRoleList, listUserById);
+router.post('/', createUserVerify, createUser);
+router.put('/:id', verifyJWT, verifyRoleEdit, editUserById);
+router.delete('/:id', verifyJWT, verifyRoleEdit, deleteUserById);
 router.post('/login', login);
 
 

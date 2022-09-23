@@ -20,7 +20,6 @@ const login = async (req,res) => {
             if(password_valid){
                 const {password, ...userLogin} = userLogged;
                 token = await jwt(userLogin);
-                console.log(token);
                 res.status(200).json({
                     success: true,
                     message: 'Authorized',
@@ -59,13 +58,14 @@ const listUsers = async (req,res) => {
 
 const listUserById = async (req,res) => {
     try {
-        const user = await db.User.findByPk(req.params.id,
+        console.log(req.params.id);
+        const user = await db.User.findByPk(Number(req.params.id),
                     {
                         attributes: {
                         exclude: 'password'
                         }
                     });
-        if(user[0] != null) res.status(200).json({ Usuario: user});
+        if(user) res.status(200).json({ Usuario: user});
         else res.status(404).json({msg: 'No existe dicho usuario en la BD'})
     } catch (error) {
         const errObj = {};
