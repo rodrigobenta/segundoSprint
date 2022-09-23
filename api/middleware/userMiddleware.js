@@ -1,41 +1,51 @@
 const fs = require('fs');
+const { check } = require('express-validator');
+const handleErrors = require('./handleErrors.js');
+const {verifyEmail, verifyUsername} = require('../../helpers/verifyUser');
+    
+    const createUserVerify = [
+        check('email', 'Ingrese un email valido').isEmail(),
+        check('username', 'El nombre de usuario es requerido').not().isEmpty(),
+        check('password', 'La contraseña es requerida y debe tener 6 caracteres').isLength({ min: 6 }),
+        check('firstname', 'El nombre es requerido').not().isEmpty(),
+        check('lastname', 'El apellido es requerido').not().isEmpty(),
+        check('email').custom(verifyEmail),
+        check('username').custom(verifyUsername),
+        (req,res,next) => {
+            handleErrors(req,res,next);
+        }
+    ]
 
-const createUserVerify = (req,res,next) =>{
-    let data = fs.readFileSync(process.env.RUTA_DB_USER, 'utf-8');
-    let dataParsed = JSON.parse(data);
-    let { email, username, password, firstname, lastname, profilepic, role} = req.body;
-    let proveUsername, proveEmail;
-    if(proveUsername = dataParsed.find( dataParsed => dataParsed.username === username)) return res.status(400).json({msg: 'Username ya utilizado'});
-    if(proveEmail = dataParsed.find(dataParsed => dataParsed.email === email)) return res.status(400).json({Mensaje: 'Email ya utilizado'});
-    if((!email)|| (!username) || (!password) || (!firstname) || (!lastname))
-        return res.status(400).json({Mensaje: 'Para crear un usuario debe contener todos los elementos'});
-    if(!role)
-        req.body.role = 'guest';
-    if(profilepic)
-        profilepic = req.profilepic;
-    next();
-};
+    const editUserVerify = [
+        check('email').isEmail().optional({nullable: true}),
+        check('username').isEmpty().optional({nullable: true}),
+        check('email').custom(verifyEmail).optional({nullable: true}),
+        check('username').custom(verifyUsername).optional({nullable: true}),
+        (req,res,next) => {
+            handleErrors(req,res,next);
+        }
+    ]
 
 const verifyRoleList = (req , res, next) => {
-    let idDb = Number(req.id);
+    let idDb = Number(req.id); //el id proviene de la verificacion del token. previamente asignado al request o req.
     let id = Number(req.params.id);
-    let role = req.role;
-    role = role.toLowerCase();
+    let role = req.role.toLowerCase();
     if (role === 'guest' && (id !== idDb)) return res.status(401).json({ Mensaje: 'No tienes permisos.' });
     next();
 }
 
 const verifyRoleEdit = (req , res, next) => {
-    let idDb = Number(req.id);
+    let idDb = Number(req.id); //el id proviene de la verificacion del token. previamente asignado al request o req.
     let id = Number(req.params.id);
     let role = req.role.toLowerCase();
-    if( (role === 'admin' && (id !== idDb))  || (role === 'guest' && (id !== idDb))) return res.status(401).json({ Mensaje: 'No tienes permisos' });
+    if((role === 'admin' && (id !== idDb))  || (role === 'guest' && (id !== idDb))) return res.status(401).json({ Mensaje: 'No tienes permisos' });
     next();
 }
 
 
 module.exports = {
     createUserVerify,
+    editUserVerify,
     verifyRoleList,
     verifyRoleEdit
 };
