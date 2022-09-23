@@ -33,7 +33,12 @@ const createPicture = async(req, res) => {
         const newPicture = await db.Picture.create(body)
         res.status(201).json({ picture: newPicture });
     } catch (error) {
-        res.status(500).json({msg: 'Server error'});
+        const errObj = {};
+            error.errors.map( er => {
+            errObj[er.path] = er.message;
+            })
+        if(errObj) res.status(500).json(errObj);
+        else res.status(500).json({ msg: 'Server error.' });
     }
 };
 
@@ -49,8 +54,12 @@ const editPicture = async(req, res) => {
         }
         else res.status(404).json({msg: "La foto no existe"});
     } catch (error) {
-        console.log(error);
-        res.status(500).json({mensaje: 'Server error'});
+        const errObj = {};
+            error.errors.map( er => {
+            errObj[er.path] = er.message;
+            })
+        if(errObj) res.status(500).json(errObj);
+        else res.status(500).json({ msg: 'Server error.' });
     }
 };
 
