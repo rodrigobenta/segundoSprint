@@ -181,7 +181,7 @@ const deleteProduct = (req, res) => {
         const findProductCar = await db.Cart.findOne();
         const findPictureProduct = await db.Picture.findOne();
 
-        if()
+     
 
 
         await db.Product.destroy({where:{
