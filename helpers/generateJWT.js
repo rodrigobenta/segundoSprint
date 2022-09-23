@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 //variable   = process.env.variableArchivoEnv
 const passwd = process.env.JWT_PASS;
 
-
 const generateJWT = (payload) => {
 
    return new Promise((resolve, reject) => {
