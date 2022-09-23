@@ -17,6 +17,10 @@ module.exports = (sequelize, dataTypes) => {
         },
         description:{
             type: dataTypes.STRING(50)
+        },
+        fk_id_product:{
+            type: dataTypes.INTEGER,
+            allowNull: false
         }
     }
 
