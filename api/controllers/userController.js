@@ -2,39 +2,44 @@ const express = require('express');
 const { sequelize } = require('../../database/models')
 const app = express();
 const db = require('../../database/models')
+const { Op } = require("sequelize");
+const bcrypt = require("bcrypt");
 const jwt = require('../../helpers/generateJWT')
 
 const login = async (req,res) => {
     try {
-        
+        const {username} = req.body
+        const userLogged = await db.User.findOne({
+            where: {
+                username: username
+            },
+            raw: true
+        })
+        if(userLogged){
+            const password_valid = await bcrypt.compare(req.body.password,userLogged.password);
+            if(password_valid){
+                const {password, ...userLogin} = userLogged;
+                token = await jwt(userLogin);
+                console.log(token);
+                res.status(200).json({
+                    success: true,
+                    message: 'Authorized',
+                    user: {
+                        id: userLogin.id_user,
+                        username: userLogin.username
+                        },
+                    token
+                })
+            } else {
+                res.status(400).json({ error : "No existe usuario o contraseña" });
+            }
+        }else{
+            res.status(404).json({ error : "No existe usuario o contraseña" });
+        }
+        //console.log(userLogged[0].lastname);
     } catch (error) {
-        
+        console.log(error);
     }
-    // try {
-    //     let data = fs.readFileSync(process.env.RUTA_DB_USER, 'utf-8');
-    //     data = JSON.parse(data);
-    //     let userLogin = data.find(data => data.username == req.body.username && data.password == req.body.password);
-    //     if(!userLogin) res.status(500).json({
-    //         msg: "No existe usuario o contraseña"
-    //     })
-    //     else {
-    //         const token = await jwt(userLogin);
-    //         userLogin.password = '';
-    //         res.status(200).json({
-    //             success: true,
-    //             message: 'Authorized',
-    //             user: {
-    //                 iduser: userLogin.id,
-    //                 username: userLogin.username,
-    //                 },
-    //             token
-    //         })
-    //     }
-    // } catch (error) {
-    //     res.status(500).json({
-    //         msg: "Error interno"
-    //     })
-    // }
 }
 
 const listUsers = async (req,res) => {
@@ -45,7 +50,7 @@ const listUsers = async (req,res) => {
                         exclude: 'password'
                         }
                     });
-        if(users>0) res.status(200).json({ Usuario: users});
+        if(users[0] != null) res.status(200).json({ Usuarios: users});
         else res.status(404).json({msg: 'No existen usuarios en la BD'})
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });
@@ -54,13 +59,13 @@ const listUsers = async (req,res) => {
 
 const listUserById = async (req,res) => {
     try {
-        const users = await db.User.findByPk(req.params.id,
+        const user = await db.User.findByPk(req.params.id,
                     {
                         attributes: {
                         exclude: 'password'
                         }
                     });
-        if(users) res.status(200).json({ Usuario: users});
+        if(user[0] != null) res.status(200).json({ Usuario: user});
         else res.status(404).json({msg: 'No existe dicho usuario en la BD'})
     } catch (error) {
         const errObj = {};
@@ -74,8 +79,13 @@ const listUserById = async (req,res) => {
 
 const createUser = async (req,res) => {
     try {
-        const body = req.body;
-        const create = await db.User.create(body)
+        let {password, ...body} = req.body;
+        const salt = await bcrypt.genSalt(10); //saltRounds
+        password = await bcrypt.hash(password, salt); //hash
+        body['password'] = password; //le asigno la nueva password
+        let create = await db.User.create(body);
+        //create['password'] = '**************';
+        create['password'] = null;
         res.status(200).json({usuario: create});
     } catch (error) {
         const errObj = {};
@@ -83,16 +93,26 @@ const createUser = async (req,res) => {
             errObj[er.path] = er.message;
             })
         if(errObj) res.status(500).json(errObj);
-        else res.status(500).json({ msg: 'Server error.' });
+        else  res.status(500).json({ msg: 'Server error.' });
+        console.log(error);
     }
 }
 
 const editUserById = async (req,res) => {
     try {
-        const body = req.body;
-        const userEdit = await db.User.findByPk(Number(req.params.id));
-        await db.User.update(body,{ where: { id_user: Number(req.params.id) }});
-        if(userEdit) res.status(200).json(userEdit);
+        const userExist = await db.User.findByPk(Number(req.params.id));
+        if(userExist){
+            let {password, ...body} = req.body;
+            if(password){
+                const salt = await bcrypt.genSalt(10); //saltRounds
+                password = await bcrypt.hash(password, salt); //hash
+                body['password'] = password; //le asigno la nueva password
+            }
+            /* const userEdit =  */await db.User.update(body,{ where: { id_user: Number(req.params.id) }}/* ,{returning: true,raw: true} */);
+            const userEdit = await db.User.findByPk(Number(req.params.id));
+            userEdit['password'] = null;
+            res.status(200).json(userEdit); 
+        } 
         else res.status(404).json({ msg: 'El usuario no existe.'});
     } catch (error) {
         const errObj = {};
@@ -106,11 +126,15 @@ const editUserById = async (req,res) => {
 
 const deleteUserById = async (req,res) => {
     try {
-        const userDeleted = await db.User.findByPk(Number(req.params.id));
-        await db.User.destroy({where:{
-                    id_user: req.params.id
-                }})
-        if(userDeleted) res.status(200).json({userDeleted});
+        ///const userDeleted = await db.User.findByPk(Number(req.params.id),{raw: true});
+        let userDeleted;
+        if(userDeleted = await db.User.findByPk(Number(req.params.id),{raw: true})){
+            const {password, ...userShow} = userDeleted;
+            await db.User.destroy({where:{
+                id_user: req.params.id
+            }})
+            res.status(200).json({userShow});
+        }
         else return res.status(404).json({ msg: 'El usuario no existe.'});
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });
