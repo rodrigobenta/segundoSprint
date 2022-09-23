@@ -66,12 +66,9 @@ const editPicture = async(req, res) => {
 const deletePicture = async(req, res) => {
     try {
         const id = req.params.id;
-        const pictureDeleted = await db.Picture.findByPk(id)
-        if (pictureDeleted){
-            await db.Picture.destroy({where: {id_picture: id}})
-            res.status(200).json({PictureDeleted: pictureDeleted})
-        }
-        else res.status(404).json({msg: "la foto no existe"})
+        const pictureDeleted = req.picture;
+        await db.Picture.destroy({where: {id_picture: id}})
+        res.status(200).json({PictureDeleted: pictureDeleted})
     } catch (error) {
         console.log(error);
         res.status(500).json({mensaje: 'Server error'});
