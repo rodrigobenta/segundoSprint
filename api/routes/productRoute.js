@@ -11,9 +11,9 @@ router.get('/search/', /* verifyJWT, */ listProductByKeyword);
 router.get('/mostwanted', /* verifyJWT, */ listMostWantedProduct);
 router.get('/:id/pictures', /* verifyJWT, */ listPictures);
 router.get('/:id', /* verifyJWT, */ listProductByID);
-router.post('/', /* verifyJWT, */ verifyRoleCreateDelete, verifyCreateEdit, createProduct);
-router.put('/:idProduct', /* verifyJWT, */ verifyRoleEdit, editProduct);
-router.delete('/:id', /* verifyJWT, */ verifyRoleCreateDelete, deleteProduct);
+router.post('/', /* verifyJWT, */ /* verifyRoleCreateDelete, verifyCreateEdit, */ createProduct);
+router.put('/:idProduct', /* verifyJWT, */ /* verifyRoleEdit, */ editProduct);
+router.delete('/:id', /* verifyJWT, */ /* verifyRoleCreateDelete, */ deleteProduct);
 
 
 
