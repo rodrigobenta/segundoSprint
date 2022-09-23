@@ -1,22 +1,10 @@
 const { where } = require("sequelize");
 const db = require("../../database/models");
-const { deletePicture } = require("./picturesController");
+const { pasarATrueOrFalseArray, pasarATrueOrFalse } = require("../../helpers/pasarATrue");
 const Op = db.Sequelize.Op;
-
-const pasarATrueOrFalseArray = (arr) => {
-    arr.forEach(el => el.mostwanted === 1 ? el.mostwanted = true : el.mostwanted = false);
-}
-
-const pasarATrueOrFalse = (elem) => {
-    elem.mostwanted === 1 ? elem.mostwanted = true : elem.mostwanted = false;
-}
-
-
-
 
 //lista todos los productos, o lista por categoria.
 const listProduct = async (req, res) => {
-
     try {
         const products = await db.Product.findAll({
             include: [
@@ -25,19 +13,14 @@ const listProduct = async (req, res) => {
             ], attributes: { exclude: ['fk_id_category'] }
         });
         if (products[0] != null) {
-            pasarATrueOrFalseArray(products);
+            pasarATrueOrFalseArray(products)
             return res.status(200).json({ Productos: products });
         } else {
             res.status(404).json({ msg: 'No existen productos.' });
         }
     } catch (error) {
         res.status(500).json({ mensaje: 'Server error' });
-
     }
-
-
-
-
 }
 
 const listProductByID = async (req, res) => {
@@ -160,58 +143,20 @@ const editProduct = async (req, res) => {
     }
 }
 
-
 const deleteProduct = async (req, res) => {
     try {
         const id = Number(req.params.id);
         const oldData = await db.Product.findByPk(id);
-
-
-
-        const cartInProduct = await db.Cart.findOne({
-            where: {
-                fk_id_product: Number(oldData.id_product)
-            }
-        });
-
-
-
-
-
+        const cartInProduct = await db.Cart.findOne({ where: {fk_id_product: Number(oldData.id_product) }});
         if (oldData) {
-
-            console.log(cartInProduct);
-
             if (!cartInProduct) {
-
-                const pictureProductDelete = await db.Picture.findOne({
-
-                    where: {
-                        fk_id_product: Number(oldData.id_product)
-                    }
-
-
-                })
-
-                console.log(pictureProductDelete)
-
+                const pictureProductDelete = await db.Picture.findOne({ where: { fk_id_product: Number(oldData.id_product) } });
                 if (!pictureProductDelete) {
-
-                    await db.Product.destroy({
-                        where: {
-                            id_product: id
-                        }
-                    })
-
+                    await db.Product.destroy({ where: { id_product: id } });
                     res.status(200).json({ oldData });
-
-
                 } else {
-
-
                     res.status(404).json({ msg: 'Ese producto tiene una picture asociada y por ende no se puede borrar' })
                 }
-
             } else {
                 res.status(404).json({ msg: 'Ese producto tiene un carro asociado y por ende no se puede borrar' })
             }
@@ -219,7 +164,6 @@ const deleteProduct = async (req, res) => {
             res.status(404).json({ msg: 'Ese producto no existe.' })
         }
     } catch (error) {
-
         res.status(500).json({ error });
     }
 }
