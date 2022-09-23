@@ -49,7 +49,7 @@ const listUsers = async (req,res) => {
                         exclude: 'password'
                         }
                     });
-        if(users[0] != null) res.status(200).json({ Usuarios: users});
+        if(users[0]!= null) res.status(200).json({ Usuarios: users});
         else res.status(404).json({msg: 'No existen usuarios en la BD'})
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });
@@ -58,8 +58,7 @@ const listUsers = async (req,res) => {
 
 const listUserById = async (req,res) => {
     try {
-        console.log(req.params.id);
-        const user = await db.User.findByPk(Number(req.params.id),
+        const user = await db.User.findByPk(req.params.id,
                     {
                         attributes: {
                         exclude: 'password'
