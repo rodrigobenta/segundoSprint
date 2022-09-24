@@ -1,15 +1,40 @@
 const db = require("../../database/models");
+const {check} = require('express-validator');
+const handleErrors = require('./handleErrors');
+const {verifyUrl} = require("../../helpers/verifyPicture")
 
 
-const verifyCreateEditPictures = (req,res,next) => {
-    try {
-        let arr = Object.keys(req.body);
-        if (arr.length > 3) res.status(400).json({msg: "Campos incorrectos"});
-        next();
-    } catch (error) {
-        res.status(500).json({msg: 'Server Error'})
+const createPictureVerify = [
+    check("url", "Ingrese una url").not().isEmpty(),
+    check("fk_id_product", "Ingrese un id de producto").not().isEmpty(),
+    check("url").custom(verifyUrl),
+    (req,res,next) => {
+        handleErrors(req,res,next);
     }
-};
+]
+
+const editPictureVerify = [
+    check("url").isEmpty().optional({nullable: true}),
+    check("url").custom(verifyUrl).optional({nullable: true}),
+    (req,res,next) => {
+        handleErrors(req,res,next);
+    }
+]
+
+const existPictureVerify = async(req,res,next) => {
+    try{        
+        const picture = await db.Picture.findByPk(req.params.id);
+        if (picture){
+            req.picture = picture;
+            next();
+        }
+        else res.status(404).json({msg: "la foto no existe"})
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({msg: "Server error"});
+    }
+}
 
 const verifyRoleEditPicture = (req,res,next) => {
     try {
@@ -22,6 +47,8 @@ const verifyRoleEditPicture = (req,res,next) => {
 }
 
 module.exports = {
-    verifyCreateEditPictures,
+    createPictureVerify,
+    editPictureVerify,
+    existPictureVerify,
     verifyRoleEditPicture
 };
