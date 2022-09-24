@@ -5,8 +5,7 @@ module.exports = {
     "database": "ecomerce",
 
     "host": "127.0.0.1",
-    "dialect": "mysql",
-    "port" : "3001"
+    "dialect": "mysql"
   },
   "test": {
     "username": "root",
