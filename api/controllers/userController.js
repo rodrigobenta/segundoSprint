@@ -48,7 +48,9 @@ const listUsers = async (req,res) => {
                         exclude: 'password'
                         }
                     });
+
         if(users[0]!= null) res.status(200).json({ Usuarios: users});
+
         else res.status(404).json({msg: 'No existen usuarios en la BD'})
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });
@@ -57,7 +59,9 @@ const listUsers = async (req,res) => {
 
 const listUserById = async (req,res) => {
     try {
+
         if(req.user) res.status(200).json({ Usuario: req.user});
+
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });
     }

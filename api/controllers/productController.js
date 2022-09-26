@@ -77,16 +77,26 @@ const createProduct = async (req, res) => {
 
 const editProduct = async (req, res) => {
     try {
-        const productEdited = req.productEdited;
+        const idProduct = req.id;
+        const body = req.body;
+        const fk_id_category = req.category;
+        await db.Product.update({ ...body, fk_id_category },{ where: { id_product: Number(idProduct) } });
+        const productEdited = await db.Product.findByPk(Number(idProduct), {
+            include: [
+                { association: 'picture_product', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false },
+                { association: 'category_product', attributes: { exclude: ['id_category'] }, require: false }
+            ], attributes: { exclude: ['fk_id_category'] }
+        });
+
         pasarATrueOrFalse(productEdited);
         res.status(200).json({ ProductoEditado: productEdited });
     } catch (error) {
-        const errObj = {};
+        /* const errObj = {};
         error.errors.map(er => {
             errObj[er.path] = er.message;
         })
         if (errObj) res.status(500).json(errObj);
-        else res.status(500).json({ msg: 'Server error.', error });
+        else  */res.status(500).json({ msg: 'Server error.', error });
     }
 }
 

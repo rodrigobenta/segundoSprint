@@ -18,8 +18,11 @@ const verifyCreate = [
 ]
 
 const verifyEdit = [
-    check('title').custom(verifyTitle),
-    check('fk_id_category').custom(verifyCategory),
+    check('title').isLength({ min: 1}).custom(verifyTitle).optional({nullable: true}),
+    check('stock', 'Ingrese un numero mayor a 0').isInt({ min: 1}).optional({nullable: true}),
+    check('description', 'Ingrese una descripcion').not().isEmpty().optional({nullable: true}),
+    check('mostwanted', 'Ingrese un valor entre 1 y 0 siendo 1 True').isInt({min:0, max:1}).optional({nullable: true}),
+    check('fk_id_category').custom(verifyCategory).optional({nullable: true}),
     (req,res,next) => {
         handleErrors(req,res,next);
     }
@@ -91,20 +94,18 @@ const existProductListMostwantedVerify = async (req,res,next) => {
 const existProductEditVerify = async (req,res,next) => {
     const { fk_id_category, ...body } = req.body;
     const { idProduct } = req.params;
+    let category = null;
     const product = await db.Product.findByPk(Number(idProduct));
-    const category = await db.Category.findByPk(fk_id_category);
-    if (product && category) {
-        await db.Product.update({ ...body, fk_id_category }, { where: { id_product: Number(idProduct) } });
-        const productEdited = await db.Product.findByPk(Number(idProduct), {
-            include: [
-                { association: 'picture_product', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false },
-                { association: 'category_product', attributes: { exclude: ['id_category'] }, require: false }
-            ], attributes: { exclude: ['fk_id_category'] }
-        });
-        req.productEdited = productEdited;
+    if (!fk_id_category)  category = product.fk_id_category;
+    else category = fk_id_category;
+
+    if (product){
+        req.body = body;
+        req.id = idProduct;
+        req.category= category;
         next();
     }
-    else res.status(404).json({ msg: 'No existe no el producto o la cateogira.' })
+    else return res.status(404).json({ msg: 'No existe el producto.' })
 }
 
 const existProductDeleteVerify = async (req,res,next) => {
