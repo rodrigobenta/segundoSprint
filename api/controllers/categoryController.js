@@ -5,7 +5,7 @@ const listCategory = async (req, res) => {
 
     try {
         const categorys =req.category;
-        return res.status(200).json({ Categorys: categorys }); 
+        return res.status(200).json({ Categories: categorys }); 
     } catch (error) {
         res.status(500).json({ mensaje: 'Server error' });
 
@@ -39,7 +39,7 @@ const deleteCategoryById = async (req,res) => {
         await db.Category.destroy({where:{
             id_category: id
         }})
-        res.status(200).json( {Categoria_Borrada : categoryShow});
+        res.status(200).json( {CategoryDeleted : categoryShow});
 
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });
@@ -52,7 +52,7 @@ const editCategory = async (req, res) => {
         const id = req.id;
         await db.Category.update({ ...body }, { where: { id_category: Number(id) } });
         const categoryEdit = await db.Category.findByPk(id, { attributes: { exclude: ['id_category'] }})
-        res.status(200).json({ CategoriaEditada: categoryEdit });
+        res.status(200).json({ CategoryEdited: categoryEdit });
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });
     }
