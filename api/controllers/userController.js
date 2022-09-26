@@ -46,11 +46,11 @@ const listUsers = async (req,res) => {
                     {
                         attributes: {
                         exclude: 'password'
-                        }
-                    });
-
+                        },
+                        include: {association: 'product_user',attributes: ['title'], as: 'Cart', 
+                        through: {attributes:['quantity']}}
+                        });
         if(users[0]!= null) res.status(200).json({ Usuarios: users});
-
         else res.status(404).json({msg: 'No existen usuarios en la BD'})
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });
@@ -59,9 +59,7 @@ const listUsers = async (req,res) => {
 
 const listUserById = async (req,res) => {
     try {
-
         if(req.user) res.status(200).json({ Usuario: req.user});
-
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });
     }
@@ -74,7 +72,7 @@ const createUser = async (req,res) => {
         password = await bcrypt.hash(password, salt); //hash
         body['password'] = password; //le asigno la nueva password
         let create = await db.User.create(body);
-        create['password'] = null;
+        create['password'] = '*****************';
         res.status(200).json({usuario: create});
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });

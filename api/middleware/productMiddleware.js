@@ -29,12 +29,23 @@ const verifyEdit = [
 ]
 
 const existProductListVerify = async (req,res,next) => {
-    const products = await db.Product.findAll({
-        include: [
-            { association: 'picture_product', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false },
-            { association: 'category_product', attributes: { exclude: ['id_category'] }, require: false }
-        ], attributes: { exclude: ['fk_id_category'] }
-    });
+    let products = null;
+    const {category} = req.query;
+    if(category){
+        products = await db.Product.findAll({
+            include: [
+                { association: 'picture_product', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false },
+                { association: 'category_product', attributes: { exclude: ['id_category'] }, where:{ title: { [Op.like]: `${category}` } }, require: false }
+            ], attributes: { exclude: ['fk_id_category'] }
+        });
+    }else{
+        products = await db.Product.findAll({
+            include: [
+                { association: 'picture_product', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false },
+                { association: 'category_product', attributes: { exclude: ['id_category'] }, require: false }
+            ], attributes: { exclude: ['fk_id_category'] }
+        });
+    }
     if (products[0] != null) {
         req.products = products;
         next();
@@ -110,7 +121,8 @@ const existProductEditVerify = async (req,res,next) => {
 
 const existProductDeleteVerify = async (req,res,next) => {
     const id = Number(req.params.id);
-    const oldData = await db.Product.findByPk(id);
+    const oldData = await db.Product.findByPk(id, {raw: true});
+    console.log(oldData);
     const cartInProduct = await db.Cart.findOne({ where: {fk_id_product: Number(oldData.id_product) }});
     if (oldData) {
         if (!cartInProduct) {

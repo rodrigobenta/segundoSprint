@@ -31,8 +31,6 @@ const cartOfId = async(req, res) => {
     try {
         const userEdit = await db.User.findByPk(Number(req.params.id));
         if(userEdit){
-            console.log("paseesaporqueria");
-            
             const cartOfUser = await db.User.findByPk(Number(req.params.id),
                                 { attributes:['username'],
                                     include:{association: 'product_user',attributes: ['title'], 
@@ -47,91 +45,74 @@ const cartOfId = async(req, res) => {
 };
 
 const updateCart = async(req, res) => {
-
-
     try {
         const userEdit = await db.User.findByPk(Number(req.params.id));
         if(userEdit){
-
-            const cartOfUser = await db.Cart.findAll({where: {fk_id_user: (Number(req.params.id))}},{raw: true});
-            //console.log("atrasfor");
-            
-            //res.json(cartOfUser.length);
-            
-            console.log("atrasfor");
-
+            const cartOfUser = await db.Cart.findAll({where: {fk_id_user: (Number(req.params.id))}},{raw: true})
             for (let i = 0; i < cartOfUser.length; i++) {
                 let element = cartOfUser[i];
-                console.log("adentrodelfor");
                 let elementFkProduct =element.fk_id_product;
                 let product = await db.Product.findByPk(elementFkProduct);
                 let sum= product.stock + element.quantity;
                 db.Product.update({stock: sum}, {where : {id_product : elementFkProduct}});
                 
             }//SEPUEDEAHORRAR
-            
-            
+
             const cartOfUserDestroyed = await db.Cart.destroy({where: {fk_id_user: (Number(req.params.id))}})
-            
-            
-            
-            
+
             const previewCart = req.body;
             const finalCart= [];
+            const finalCartShow = [];
             const noStock= [];
+            const noStockCartShow = [];
             const outStock=[];
-            for (let i = 0; i < previewCart.length; i++) {
-                
+            for (let i = 0; i < previewCart.length; i++){ 
                 let producto;
-                
+                let obj;
                 if (producto= await db.Product.findByPk(previewCart[i].fk_id_product,{raw:true})){
-                    if (producto.stock>= previewCart[i].quantity) {
-                        
+                    if (producto.stock>= previewCart[i].quantity){ 
                         let cantida = producto.stock - previewCart[i].quantity;
-                        
                         db.Product.update({stock: cantida},{where :{id_product: previewCart[i].fk_id_product} });
                         previewCart[i]["fk_id_user"]=Number(req.params.id);
                         finalCart.push(previewCart[i]);
-
-                    }//if stock
-                    else{//distinto de 0 FALATA AGREGAR
-
-                        if (producto.stock!=0) {
-                            
-                        let fixedQuanti =  previewCart[i];
-                        db.Product.update({stock: 0},{where :{id_product: previewCart[i].fk_id_product} });
-
-
-                        fixedQuanti["quantity"]=(producto.stock);
-                        //finalCart.push(fixedQuanti);
-                        fixedQuanti["fk_id_user"]=Number(req.params.id);
                         
-                        noStock.push(fixedQuanti);
+                        obj = {title: producto.title, quantity: previewCart[i].quantity};
+                        finalCartShow.push(obj);
+                    }//if stock
+                    else{//distinto de 0 FALTA AGREGAR
+                            if (producto.stock!=0) {   
+                                let fixedQuanti =  previewCart[i];
+                                db.Product.update({stock: 0},{where :{id_product: previewCart[i].fk_id_product} });
+                                fixedQuanti["quantity"]=(producto.stock);
+                                fixedQuanti["fk_id_user"]=Number(req.params.id);
+                                noStock.push(fixedQuanti);
+                                obj = {title: producto.title, quantity: producto.stock};
+                                noStockCartShow.push(obj);
+                            }
+                            else{
+                                obj = {title: producto.title, quantity: 0};
+                                outStock.push(obj)
 
-                    } else {
-                        outStock.push(previewCart[i])       
-                    }
+                            }       
+                        }
                     }
 
-            }//if existe producot
-        }//for
+            }//cierra for
+        
         const completeCart = finalCart.concat(noStock);
         
-
-        
-
-
-
         db.Cart.bulkCreate(completeCart);
             
-            res.status(200).json({msg: 'Productos en Stock',
-                                    productos: finalCart,
-                                    msg2: 'Productos con stock limitado',
-                                    productos2: noStock,
-                                    msg3: 'Productos SIN stock',
-                                    productos3: outStock});
+        res.status(200).json({msg: 'Productos en Stock',
+                                productos: finalCartShow,//finalCart
+                                msg2: 'Productos con stock limitado',
+                                productos2: noStock,
+                                msg3: 'Productos SIN stock',
+                                productos3: outStock});
 
-        }else res.status(404).json({ msg: 'No encuentra el usuario'});
+
+        }//no existe usuario
+        else res.status(404).json({ msg: 'No encuentra el usuario'});
     } catch (error) {
         res.status(500).json({Mensaje: "Server error (UpdateCart)"});
     };

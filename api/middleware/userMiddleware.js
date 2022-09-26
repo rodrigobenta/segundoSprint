@@ -36,9 +36,11 @@ const e = require('express');
             const userExist = await db.User.findByPk(Number(req.params.id),{
                 attributes: {
                 exclude: 'password'
-                }
-            },
-            {raw: true});
+                },
+                include: {association: 'product_user',attributes: ['title'], as: 'Cart', 
+                through: {attributes:['quantity']}}
+                },
+                {raw: true});
             if(userExist) {
                 req.user = userExist.dataValues;
                 next();

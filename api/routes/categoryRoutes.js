@@ -6,18 +6,11 @@ const router = express.Router();
 
 
 
-
 router.get('/', verifyJWT, listCategory);
 router.get('/:id' , verifyJWT,listCategoryID);
 router.post('/',verifyJWT, verifyRoleEditPicture ,  createCategory);
 router.delete('/:id',verifyJWT, verifyRoleEditPicture ,  deleteCategoryById);
 router.put('/:id',verifyJWT, verifyRoleEditPicture ,  editCategory);
-
-
-
-
-
-
 
 
 router.get('/*', (req,res)=>{

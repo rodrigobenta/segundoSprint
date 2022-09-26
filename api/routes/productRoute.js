@@ -6,6 +6,7 @@ const { listPictures } = require('../controllers/picturesController');
 const router = express.Router();
 
 
+
 router.get('/', verifyJWT,existProductListVerify, listProduct);
 router.get('/search/', verifyJWT,existProductListKeywordVerify, listProductByKeyword);
 router.get('/mostwanted', verifyJWT,existProductListMostwantedVerify, listMostWantedProduct);
