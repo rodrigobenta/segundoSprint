@@ -35,9 +35,8 @@ const login = async (req,res) => {
         }else{
             res.status(404).json({ error : "No existe usuario o contraseña" });
         }
-        //console.log(userLogged[0].lastname);
     } catch (error) {
-        console.log(error);
+        res.status(500).json({ msg: 'Server error.' });
     }
 }
 
@@ -60,12 +59,7 @@ const listUserById = async (req,res) => {
     try {
         if(req.user) res.status(200).json({ Usuario: req.user});
     } catch (error) {
-        const errObj = {};
-            error.errors.map( er => {
-            errObj[er.path] = er.message;
-            })
-        if(errObj) res.status(500).json(errObj);
-        else res.status(500).json({ msg: 'Server error.' });
+        res.status(500).json({ msg: 'Server error.' });
     }
 }
 
@@ -79,37 +73,24 @@ const createUser = async (req,res) => {
         create['password'] = null;
         res.status(200).json({usuario: create});
     } catch (error) {
-        const errObj = {};
-            error.errors.map( er => {
-            errObj[er.path] = er.message;
-            })
-        if(errObj) res.status(500).json(errObj);
-        else  res.status(500).json({ msg: 'Server error.' });
-        console.log(error);
+        res.status(500).json({ msg: 'Server error.' });
     }
 }
 
 const editUserById = async (req,res) => {
     try {
-        if(req.user){
-            let {password, ...body} = req.user;//user asignaado al request desde middleware
+            let {password, ...body} = req.body;
             if(password){
                 const salt = await bcrypt.genSalt(10); //saltRounds
                 password = await bcrypt.hash(password, salt); //hash
                 body['password'] = password; //le asigno la nueva password
             }
-            /* const userEdit =  */await db.User.update(body,{ where: { id_user: Number(req.params.id) }}/* ,{returning: true,raw: true} */);
+            await db.User.update(body,{ where: { id_user: Number(req.params.id) }});
             const userEdit = await db.User.findByPk(Number(req.params.id));
-            userEdit['password'] = null;
+            userEdit['password'] = '******************';
             res.status(200).json(userEdit); 
-        } 
     } catch (error) {
-        const errObj = {};
-            error.errors.map( er => {
-            errObj[er.path] = er.message;
-            })
-        if(errObj) res.status(500).json(errObj);
-        else res.status(500).json({ msg: 'Server error.' });
+        res.status(500).json({ msg: 'Server error.' });
     }
 }
 

@@ -19,9 +19,12 @@ const e = require('express');
     ]
 
     const editUserVerify = [
-        check('email').isEmail().optional({nullable: true}),
-        check('username').isEmpty().optional({nullable: true}),
-        check('email').custom(verifyEmail).optional({nullable: true}),
+        check('email').isEmail().isLength({min: 1}).optional({nullable: true}),
+        check('username').isLength({min:1}).optional({nullable: true}),
+        check('password').isLength({min:1}).optional({nullable: true}),
+        check('firstname').isLength({min:1}).optional({nullable: true}),
+        check('lastname').isLength({min:1}).optional({nullable: true}),
+        check('email').custom(verifyEmail).isLength({min: 1}).optional({nullable: true}),
         check('username').custom(verifyUsername).optional({nullable: true}),
         (req,res,next) => {
             handleErrors(req,res,next);
@@ -37,7 +40,7 @@ const e = require('express');
             },
             {raw: true});
             if(userExist) {
-                req.user = userExist;
+                req.user = userExist.dataValues;
                 next();
             }
             else res.status(400).json({msg: 'El usuario no existe'});
