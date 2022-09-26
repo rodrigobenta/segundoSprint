@@ -1,6 +1,6 @@
 
 const { sequelize } = require('./database/models')
-require('dotenv').config(/* {path: '/Users/rodrigoandresbentancor/Documents/Visual Studio Code Projects/27-SprintDos/.env', debug: true} */);
+require('dotenv').config();
 const express = require('express');
 const usersRoutes = require('./api/routes/userRoutes');
 const productsRoutes = require('./api/routes/productRoute');
