@@ -1,11 +1,11 @@
 module.exports = {
   "development": {
     "username": "root",
-    "password": "Amelia03*",
+    "password": "cenco",
     "database": "ecommerce",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "port" : "3306"
+    "port" : "3000"
   },
   "test": {
     "username": "root",

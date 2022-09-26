@@ -15,7 +15,7 @@ router.delete('/:id', verifyJWT, verifyRoleEdit, userExists, deleteUserById);
 router.post('/login', login);
 
 
-//Alias de carts:ß
+//Alias de carts
 router.get('/:id/cart', verifyJWT, verifyRoleList , cartOfId);
 router.put('/:id/cart', verifyJWT, verifyRoleEdit, updateCart);
 

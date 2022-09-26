@@ -1,16 +1,17 @@
 const express = require('express');
 const { listCategory, listCategoryID, createCategory, deleteCategoryById, editCategory } = require('../controllers/categoryController');
+const { verifyRoleEditPicture } = require("../middleware/picturesMiddelware")
 const verifyJWT  = require('../middleware/verifyJWT');
 const router = express.Router();
 
 
 
 
-router.get('/', /* verifyJWT, */ listCategory);
-router.get('/:id' , /* verifyJWT, */listCategoryID);
-router.post('/',/* verifyJWT, */ /* verifyRoleEditPicture ,*/  createCategory);
-router.delete('/:id',/* verifyJWT, */ /* verifyRoleEditPicture ,*/  deleteCategoryById);
-router.put('/:id',/* verifyJWT, */ /* verifyRoleEditPicture ,*/  editCategory);
+router.get('/', verifyJWT, listCategory);
+router.get('/:id' , verifyJWT,listCategoryID);
+router.post('/',verifyJWT, verifyRoleEditPicture ,  createCategory);
+router.delete('/:id',verifyJWT, verifyRoleEditPicture ,  deleteCategoryById);
+router.put('/:id',verifyJWT, verifyRoleEditPicture ,  editCategory);
 
 
 
