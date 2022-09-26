@@ -1,19 +1,19 @@
 const express = require('express');
 const {listProduct,listProductByID, listMostWantedProduct, listProductByKeyword, createProduct, editProduct, deleteProduct} = require('../controllers/productController');
 const verifyJWT = require('../middleware/verifyJWT');
-const {verifyCreateEdit, verifyRoleCreateDelete,verifyRoleEdit} = require('../middleware/productMiddleware');
+const {verifyCreate, verifyRoleCreateDelete,verifyRoleEdit, verifyEdit, existProductListVerify, existProductListKeywordVerify, existProductListMostwantedVerify, existProductListByIdVerify, existProductEditVerify, existProductDeleteVerify} = require('../middleware/productMiddleware');
 const { listPictures } = require('../controllers/picturesController');
 const router = express.Router();
 
 
-router.get('/', /* verifyJWT, */ listProduct);
-router.get('/search/', /* verifyJWT, */ listProductByKeyword);
-router.get('/mostwanted', /* verifyJWT, */ listMostWantedProduct);
+router.get('/', /* verifyJWT, */existProductListVerify, listProduct);
+router.get('/search/', /* verifyJWT, */existProductListKeywordVerify, listProductByKeyword);
+router.get('/mostwanted', /* verifyJWT, */existProductListMostwantedVerify, listMostWantedProduct);
 router.get('/:id/pictures', /* verifyJWT, */ listPictures);
-router.get('/:id', /* verifyJWT, */ listProductByID);
-router.post('/', /* verifyJWT, */ verifyRoleCreateDelete, verifyCreateEdit, createProduct);
-router.put('/:idProduct', /* verifyJWT, */ verifyRoleEdit, editProduct);
-router.delete('/:id', /* verifyJWT, */ verifyRoleCreateDelete, deleteProduct);
+router.get('/:id', /* verifyJWT, */ existProductListByIdVerify, listProductByID);
+router.post('/', /* verifyJWT, */ /* verifyRoleCreateDelete, */verifyCreate, createProduct);
+router.put('/:idProduct', /* verifyJWT, */ /* verifyRoleEdit, */verifyEdit, existProductEditVerify, editProduct);
+router.delete('/:id', /* verifyJWT, */ /* verifyRoleCreateDelete, */existProductDeleteVerify, deleteProduct);
 
 
 

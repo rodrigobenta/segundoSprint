@@ -5,7 +5,7 @@ const verifyEmail = async (email) => {
       where: { email: email }
    });
    if (exist) {
-      throw new Error(`El email ${email} ya se encuentra registrado`)
+      throw new Error(`El email ${email} ya se encuentra registrado`);
    }
 }
 const verifyUsername = async (username) => {
@@ -13,7 +13,7 @@ const verifyUsername = async (username) => {
       where: { username: username }
    });
    if (exist) {
-      throw new Error(`El username ${username} ya se encuentra registrado`)
+      throw new Error(`El username ${username} ya se encuentra registrado`);
    }
 }
 
