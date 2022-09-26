@@ -2,6 +2,8 @@ const fs = require('fs');
 const { check } = require('express-validator');
 const handleErrors = require('./handleErrors.js');
 const {verifyEmail, verifyUsername} = require('../../helpers/verifyUser');
+const db = require('../../database/models')
+const e = require('express');
     
     const createUserVerify = [
         check('email', 'Ingrese un email valido').isEmail(),
@@ -26,6 +28,24 @@ const {verifyEmail, verifyUsername} = require('../../helpers/verifyUser');
         }
     ]
 
+    const userExists = async (req,res,next) => {
+        try {
+            const userExist = await db.User.findByPk(Number(req.params.id),{
+                attributes: {
+                exclude: 'password'
+                }
+            },
+            {raw: true});
+            if(userExist) {
+                req.user = userExist;
+                next();
+            }
+            else res.status(400).json({msg: 'El usuario no existe'});
+        } catch (error) {
+            res.status(500).json({msg: 'Server error'});
+        }
+    }
+
 const verifyRoleList = (req , res, next) => {
     let idDb = Number(req.id); //el id proviene de la verificacion del token. previamente asignado al request o req.
     let id = Number(req.params.id);
@@ -46,6 +66,7 @@ const verifyRoleEdit = (req , res, next) => {
 module.exports = {
     createUserVerify,
     editUserVerify,
+    userExists,
     verifyRoleList,
     verifyRoleEdit
 };

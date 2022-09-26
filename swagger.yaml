@@ -4,9 +4,9 @@ info:
   version: 1.0.0
   description: |-
     Esta API esta orientada a interactuar con el front de una pagina web de E-Commerce del grupo Cencosud SA.
-    Git Repo: https://github.com/rodrigobenta/primerSprint  
+    Git Repo: https://github.com/rodrigobenta/segundoSprint  
 servers:
-  - url: http://localhost:3000/api/v1
+  - url: http://localhost:3000/api/v2
     description: Entorno Desarrollo
 
 tags:
