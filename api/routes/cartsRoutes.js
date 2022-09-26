@@ -6,8 +6,8 @@ const { verifyRoleEdit } = require('../middleware/userMiddleware');
 const verifyJWT = require('../middleware/verifyJWT');
 
 
-router.get('/:id', /* verifyJWT, */ /* verifyRoleCartList, */ cartOfId);
-router.put('/:id', /* verifyJWT, */ /* verifyRoleEdit ,*/ updateCart);
+router.get('/:id', verifyJWT, verifyRoleCartList, cartOfId);
+router.put('/:id', verifyJWT,verifyRoleEdit , updateCart);
 
 
 

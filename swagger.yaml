@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Mi E-Commerce
-  version: 1.0.0
+  version: 2.0.0
   description: |-
     Esta API esta orientada a interactuar con el front de una pagina web de E-Commerce del grupo Cencosud SA.
     Git Repo: https://github.com/rodrigobenta/segundoSprint  
@@ -152,15 +152,7 @@ paths:
                         type: string
                       role:
                         type: string
-                      cart:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            product:
-                              type: number
-                            quantity:
-                              type: number
+
         
         '401':
           description: No posee los permisos para acceder a la funcionalidad
@@ -499,7 +491,7 @@ paths:
                   userListed:
                     type: object
                     properties:
-                      product:
+                      fk_id_product:
                         type: number
                       quantity:
                         type: number
@@ -534,7 +526,7 @@ paths:
               items:
                 type: object
                 properties:
-                  product:
+                  fk_id_product:
                     type: number
                   quantity:
                     type: number
@@ -662,22 +654,15 @@ paths:
               properties:
                 title:
                   type: string
-                price:
+                stock:
                   type: number
                 description:
                   type: string
-                image:
-                  type: string
-                gallery:
-                  type: array
-                  items:
-                    type: number 
-                category:
+                fk_id_category:
                   type: string
                 mostwanted:
-                  type: boolean
-                stock:
                   type: number
+
       
       responses: 
         '201':
@@ -750,22 +735,14 @@ paths:
               properties:
                 title:
                   type: string
-                price:
+                stock:
                   type: number
                 description:
                   type: string
-                image:
-                  type: string
-                gallery:
-                  type: array
-                  items:
-                    type: number 
-                category:
+                fk_id_category:
                   type: string
                 mostwanted:
-                  type: boolean
-                stock:
-                  type: number   
+                  type: number  
 
       responses: 
         '200':
@@ -947,11 +924,7 @@ paths:
                         type: number
                       title:
                         type: string
-                      price:
-                        type: number
                       description:
-                        type: string
-                      image:
                         type: string
                       category:
                         type: string
@@ -1018,11 +991,7 @@ paths:
                         type: number
                       title:
                         type: string
-                      price:
-                        type: number
                       description:
-                        type: string
-                      image:
                         type: string
                       category:
                         type: string
@@ -1089,11 +1058,7 @@ paths:
                         type: number
                       title:
                         type: string
-                      price:
-                        type: number
                       description:
-                        type: string
-                      image:
                         type: string
                       category:
                         type: string
@@ -1181,10 +1146,12 @@ paths:
           application/json:
             schema:
               properties:
-                picture_url:
+                url:
                   type: string
                 description:
                   type: string
+                fk_id_product:
+                  type: number
       
       responses: 
         '201':
@@ -1198,6 +1165,8 @@ paths:
                       url:
                         type: string
                       description:
+                        type: string
+                      fk_id_product:
                         type: string
   
         '400':
@@ -1295,7 +1264,6 @@ paths:
             application/json:
               schema:
                 properties:
-                  
                       id:
                         type: number
                       url:
@@ -1340,10 +1308,12 @@ paths:
           application/json:
             schema:
                 properties:
-                    picture_url:
+                    url:
                       type: string
                     description:
                       type: string
+                    fk_id_product:
+                      type: number
 
       responses: 
         '200':
@@ -1352,36 +1322,12 @@ paths:
             application/json:
               schema:
                 properties:
-                  list:
-                    type: object
-                    properties:
-                      id:
-                        type: number
-                      title:
-                        type: string
-                      price:
-                        type: number
-                      description:
-                        type: string
-                      image:
-                        type: string
-                      category:
-                        type: string
-                      gallery:
-                        type: array
-                        items:
-                          type: object 
-                          properties:
-                            picture_id:
-                              type: number
-                            picture_url:
-                              type: string
-                            description:
-                              type: string
-                      mostwanted:
-                        type: boolean
-                      stock:
-                        type: number
+                  picture_id:
+                    type: number
+                  url:
+                    type: string
+                  description:
+                    type: string
                       
         '400':
           description: Bad request
@@ -1442,6 +1388,8 @@ paths:
                     type: string
                   description:
                     type: string
+                  fk_id_product:
+                    type: number
                       
         '400':
           description:  bad request

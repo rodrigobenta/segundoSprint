@@ -31,12 +31,12 @@ module.exports = (sequelize, dataTypes) => {
         },
         role: {
             type: dataTypes.STRING(50),
-            allowNull: false
+            allowNull: true,
+            defaultValue: 'guest'
         },
         profilepic: {
             type: dataTypes.STRING(50),
-            allowNull: true,
-            defaultValue: 'guest'
+            allowNull: true
         }
     }
 

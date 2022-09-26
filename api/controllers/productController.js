@@ -18,7 +18,7 @@ const listProductByID = async (req, res) => {
     try {
         const product = req.product;    
         pasarATrueOrFalse(product);
-        return res.status(404).json({ Producto: product });
+        return res.status(200).json({ Producto: product });
     } catch (error) {
         const errObj = {};
         error.errors.map(er => {
