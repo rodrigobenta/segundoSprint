@@ -7,6 +7,7 @@ const productsRoutes = require('./api/routes/productRoute');
 const cartsRouter = require('./api/routes/cartsRoutes');
 const {login} = require('./api/controllers/userController');
 const picturesRoutes = require('./api/routes/picturesRoutes');
+const categoryRoutes = require('./api/routes/categoryRoutes')
 const app = express();
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
@@ -23,6 +24,7 @@ app.use('/api/v2/users', usersRoutes);
 app.use('/api/v2/products', productsRoutes);
 app.use('/api/v2/carts', cartsRouter);
 app.use('/api/v2/pictures', picturesRoutes);
+app.use('/api/v2/category', categoryRoutes);
 
 
 
@@ -46,6 +48,7 @@ app.post('/*', (req,res)=>{
 app.delete('/*', (req,res)=>{
     res.status(400).json({ Mensaje: 'Bad Request.'})
 })
+
 
 app.listen(3000, async () => {
     sequelize.sync({/* alter: true */}) //danger

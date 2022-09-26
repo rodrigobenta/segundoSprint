@@ -49,7 +49,9 @@ const listUsers = async (req,res) => {
                         exclude: 'password'
                         }
                     });
+
         if(users[0]!= null) res.status(200).json({ Usuarios: users});
+
         else res.status(404).json({msg: 'No existen usuarios en la BD'})
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });
@@ -58,14 +60,9 @@ const listUsers = async (req,res) => {
 
 const listUserById = async (req,res) => {
     try {
-        const user = await db.User.findByPk(Number(req.params.id),
-                    {
-                        attributes: {
-                        exclude: 'password'
-                        }
-                    });
-        if(user) res.status(200).json({ Usuario: user});
-        else res.status(404).json({msg: 'No existe dicho usuario en la BD'})
+
+        if(req.user) res.status(200).json({ Usuario: req.user});
+
     } catch (error) {
         const errObj = {};
             error.errors.map( er => {
@@ -98,9 +95,8 @@ const createUser = async (req,res) => {
 
 const editUserById = async (req,res) => {
     try {
-        const userExist = await db.User.findByPk(Number(req.params.id));
-        if(userExist){
-            let {password, ...body} = req.body;
+        if(req.user){
+            let {password, ...body} = req.user;//user asignaado al request desde middleware
             if(password){
                 const salt = await bcrypt.genSalt(10); //saltRounds
                 password = await bcrypt.hash(password, salt); //hash
@@ -111,7 +107,6 @@ const editUserById = async (req,res) => {
             userEdit['password'] = null;
             res.status(200).json(userEdit); 
         } 
-        else res.status(404).json({ msg: 'El usuario no existe.'});
     } catch (error) {
         const errObj = {};
             error.errors.map( er => {
@@ -124,15 +119,13 @@ const editUserById = async (req,res) => {
 
 const deleteUserById = async (req,res) => {
     try {
-        let userDeleted;
-        if(userDeleted = await db.User.findByPk(Number(req.params.id),{raw: true})){
-            const {password, ...userShow} = userDeleted;
+            if(req.user){
+            const {password, ...userShow} = req.user;
             await db.User.destroy({where:{
                 id_user: req.params.id
             }})
             res.status(200).json({userShow});
         }
-        else return res.status(404).json({ msg: 'El usuario no existe.'});
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });
     }
