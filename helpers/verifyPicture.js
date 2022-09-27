@@ -8,7 +8,6 @@ const verifyUrl = async (url) => {
     if (exist) throw new Error(`la url ${url} ya se encuentra en uso`)
 }
 
-
 module.exports = {
     verifyUrl
 }

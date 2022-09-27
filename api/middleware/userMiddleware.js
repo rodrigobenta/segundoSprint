@@ -1,9 +1,7 @@
-const fs = require('fs');
 const { check } = require('express-validator');
 const handleErrors = require('./handleErrors.js');
 const {verifyEmail, verifyUsername} = require('../../helpers/verifyUser');
 const db = require('../../database/models')
-const e = require('express');
     
     const createUserVerify = [
         check('email', 'Ingrese un email valido').isEmail(),
@@ -34,10 +32,8 @@ const e = require('express');
     const userExists = async (req,res,next) => {
         try {
             const userExist = await db.User.findByPk(Number(req.params.id),{
-                attributes: {
-                exclude: 'password'
-                },
-                include: {association: 'product_user',attributes: ['title'], as: 'Cart', 
+                attributes: {exclude: 'password'},
+                include: {association: 'cart',attributes: ['title'], as: 'Cart', 
                 through: {attributes:['quantity']}}
                 },
                 {raw: true});
@@ -60,13 +56,12 @@ const verifyRoleList = (req , res, next) => {
 }
 
 const verifyRoleEdit = (req , res, next) => {
-    let idDb = Number(req.id); //el id proviene de la verificacion del token. previamente asignado al request o req.
+    let idDb = Number(req.id); 
     let id = Number(req.params.id);
     let role = req.role.toLowerCase();
     if((role === 'admin' && (id !== idDb))  || (role === 'guest' && (id !== idDb))) return res.status(401).json({ Mensaje: 'No tienes permisos' });
     next();
 }
-
 
 module.exports = {
     createUserVerify,

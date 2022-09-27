@@ -1,4 +1,4 @@
-const { where } = require("sequelize");
+;
 const db = require("../../database/models");
 const { pasarATrueOrFalseArray, pasarATrueOrFalse } = require("../../helpers/pasarATrue");
 
@@ -83,20 +83,15 @@ const editProduct = async (req, res) => {
         await db.Product.update({ ...body, fk_id_category },{ where: { id_product: Number(idProduct) } });
         const productEdited = await db.Product.findByPk(Number(idProduct), {
             include: [
-                { association: 'picture_product', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false },
-                { association: 'category_product', attributes: { exclude: ['id_category'] }, require: false }
+                { association: 'pictures', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false },
+                { association: 'category', attributes: { exclude: ['id_category'] }, require: false }
             ], attributes: { exclude: ['fk_id_category'] }
         });
 
         pasarATrueOrFalse(productEdited);
         res.status(200).json({ ProductoEditado: productEdited });
     } catch (error) {
-        /* const errObj = {};
-        error.errors.map(er => {
-            errObj[er.path] = er.message;
-        })
-        if (errObj) res.status(500).json(errObj);
-        else  */res.status(500).json({ msg: 'Server error.', error });
+        res.status(500).json({ msg: 'Server error.', error });
     }
 }
 
@@ -106,7 +101,6 @@ const deleteProduct = async (req, res) => {
         const oldData = req.oldData;
         await db.Product.destroy({ where: { id_product: id } });
         res.status(200).json({ oldData });
-               
     } catch (error) {
         res.status(500).json({ error });
     }

@@ -1,8 +1,4 @@
-const express = require('express');
-const { sequelize } = require('../../database/models')
-const app = express();
 const db = require('../../database/models')
-const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 const jwt = require('../../helpers/generateJWT')
 
@@ -29,12 +25,10 @@ const login = async (req,res) => {
                         },
                     token
                 })
-            } else {
-                res.status(400).json({ error : "No existe usuario o contraseña" });
-            }
-        }else{
-            res.status(404).json({ error : "No existe usuario o contraseña" });
+            } 
+            else res.status(400).json({ error : "No existe usuario o contraseña" });
         }
+        else res.status(404).json({ error : "No existe usuario o contraseña" });
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });
     }
@@ -42,14 +36,11 @@ const login = async (req,res) => {
 
 const listUsers = async (req,res) => {
     try {
-        const users = await db.User.findAll(
-                    {
-                        attributes: {
-                        exclude: 'password'
-                        },
-                        include: {association: 'product_user',attributes: ['title'], as: 'Cart', 
-                        through: {attributes:['quantity']}}
-                        });
+        const users = await db.User.findAll({
+            attributes: {exclude: 'password'},
+            include: {association: 'cart',attributes: ['title'], as: 'Cart',
+            through: {attributes:['quantity']}}
+            });
         if(users[0]!= null) res.status(200).json({ Usuarios: users});
         else res.status(404).json({msg: 'No existen usuarios en la BD'})
     } catch (error) {
@@ -68,9 +59,9 @@ const listUserById = async (req,res) => {
 const createUser = async (req,res) => {
     try {
         let {password, ...body} = req.body;
-        const salt = await bcrypt.genSalt(10); //saltRounds
-        password = await bcrypt.hash(password, salt); //hash
-        body['password'] = password; //le asigno la nueva password
+        const salt = await bcrypt.genSalt(10); 
+        password = await bcrypt.hash(password, salt); 
+        body['password'] = password;
         let create = await db.User.create(body);
         create['password'] = '*****************';
         res.status(200).json({usuario: create});
@@ -81,16 +72,16 @@ const createUser = async (req,res) => {
 
 const editUserById = async (req,res) => {
     try {
-            let {password, ...body} = req.body;
-            if(password){
-                const salt = await bcrypt.genSalt(10); //saltRounds
-                password = await bcrypt.hash(password, salt); //hash
-                body['password'] = password; //le asigno la nueva password
-            }
-            await db.User.update(body,{ where: { id_user: Number(req.params.id) }});
-            const userEdit = await db.User.findByPk(Number(req.params.id));
-            userEdit['password'] = '******************';
-            res.status(200).json(userEdit); 
+        let {password, ...body} = req.body;
+        if(password){
+            const salt = await bcrypt.genSalt(10); 
+            password = await bcrypt.hash(password, salt); 
+            body['password'] = password; 
+        }
+        await db.User.update(body,{ where: { id_user: Number(req.params.id) }});
+        const userEdit = await db.User.findByPk(Number(req.params.id));
+        userEdit['password'] = '******************';
+        res.status(200).json(userEdit); 
     } catch (error) {
         res.status(500).json({ msg: 'Server error.' });
     }
@@ -100,9 +91,9 @@ const deleteUserById = async (req,res) => {
     try {
             if(req.user){
             const {password, ...userShow} = req.user;
-            await db.User.destroy({where:{
-                id_user: req.params.id
-            }})
+            await db.User.destroy({
+                where:{id_user: req.params.id}
+            })
             res.status(200).json({userShow});
         }
     } catch (error) {
