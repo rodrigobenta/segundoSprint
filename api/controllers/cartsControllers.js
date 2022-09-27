@@ -1,18 +1,6 @@
-const fs = require("fs");
 const direcionBaseUsuarios= process.env.RUTA_DB_USER;
 const db = require('../../database/models');
-//const { param } = require("../routes/cartsRoutes");
 
-
-function getDataU(direccion){
-    try {
-        let data = fs.readFileSync(direccion, 'utf-8');
-        data = JSON.parse(data);
-        return data;
-    } catch (error) {
-        return error;
-    }
-}
 
 function getCart(usuarioID){
     try {
@@ -30,13 +18,23 @@ function getCart(usuarioID){
 const cartOfId = async(req, res) => {
     try {
         const userEdit = await db.User.findByPk(Number(req.params.id));
+        let totalSold = 0;
         if(userEdit){
             const cartOfUser = await db.User.findByPk(Number(req.params.id),
                                 { attributes:['username'],
-                                    include:{association: 'product_user',attributes: ['title'], 
+                                    include: {association: 'cart',attributes: ['title','price'], //product_user
                                     through: {attributes:['quantity']}}
+                                    },{raw: true ,nest: true});
+
+                                    cartOfUser.product_user.forEach((el) => {
+                                        //console.log(el.dataValues.title);
+                                        //console.log(el.dataValues.Cart.dataValues.quantity);
+                                        totalSold += el.dataValues.price * el.dataValues.Cart.dataValues.quantity;
                                     });
-                res.status(200).json(cartOfUser);
+                let totalSoldUsd = parseFloat((totalSold/42)).toFixed(2);
+                res.status(200).json({msg: `Total $ ${totalSold}`,
+                                    msg1: `Total USD ${totalSoldUsd}`,
+                                    cartOfUser});
         }else res.status(404).json({ msg: 'No encuentra el usuario'});
     } catch (error) {
         console.log(error);
@@ -66,16 +64,20 @@ const updateCart = async(req, res) => {
             const noStock= [];
             const noStockCartShow = [];
             const outStock=[];
+            let totalSold = 0;
             for (let i = 0; i < previewCart.length; i++){ 
                 let producto;
                 let obj;
+                
                 if (producto= await db.Product.findByPk(previewCart[i].fk_id_product,{raw:true})){
                     if (producto.stock>= previewCart[i].quantity){ 
                         let cantida = producto.stock - previewCart[i].quantity;
                         db.Product.update({stock: cantida},{where :{id_product: previewCart[i].fk_id_product} });
                         previewCart[i]["fk_id_user"]=Number(req.params.id);
+
                         finalCart.push(previewCart[i]);
-                        
+                        totalSold += producto.price * previewCart[i].quantity;
+
                         obj = {title: producto.title, quantity: previewCart[i].quantity};
                         finalCartShow.push(obj);
                     }//if stock
@@ -85,7 +87,10 @@ const updateCart = async(req, res) => {
                                 db.Product.update({stock: 0},{where :{id_product: previewCart[i].fk_id_product} });
                                 fixedQuanti["quantity"]=(producto.stock);
                                 fixedQuanti["fk_id_user"]=Number(req.params.id);
+                                
                                 noStock.push(fixedQuanti);
+                                totalSold += producto.price * producto.stock;
+                                
                                 obj = {title: producto.title, quantity: producto.stock};
                                 noStockCartShow.push(obj);
                             }
@@ -98,24 +103,26 @@ const updateCart = async(req, res) => {
                     }
 
             }//cierra for
+
+        let totalSoldUsd = parseFloat((totalSold/42)).toFixed(2);
         
         const completeCart = finalCart.concat(noStock);
-        
         db.Cart.bulkCreate(completeCart);
-            
-        res.status(200).json({msg: 'Productos en Stock',
+        
+        res.status(200).json({msg: `Total $ ${totalSold}`,
+                                msg1: `Total USD ${totalSoldUsd}`,
+                                msg2: 'Productos en Stock',
                                 productos: finalCartShow,//finalCart
-                                msg2: 'Productos con stock limitado',
+                                msg3: 'Productos con stock limitado',
                                 productos2: noStock,
-                                msg3: 'Productos SIN stock',
+                                msg4: 'Productos SIN stock',
                                 productos3: outStock});
-
 
         }//no existe usuario
         else res.status(404).json({ msg: 'No encuentra el usuario'});
     } catch (error) {
         res.status(500).json({Mensaje: "Server error (UpdateCart)"});
-    };
+    }
 
 /*
     try {

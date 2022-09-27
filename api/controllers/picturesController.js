@@ -6,12 +6,12 @@ const listPictures = async(req, res) => {
         if(req.params.id){
             const id = req.params.id;
             const pictures = await db.Picture.findAll({where: {fk_id_product: id}});
-            (pictures.length > 0) ? res.status(200).json({pictures: pictures}) :res.status(404).json({msg: 'No existe el producto indicado'});
+            (pictures.length > 0) ? res.status(200).json({pictures: pictures}) :res.status(404).json({msg: 'No existe el producto indicado o no hay fotos'});
         }
         else{
             const {product} = req.query;
             const pictures = await db.Picture.findAll({where: {fk_id_product: product}});
-            (pictures.length > 0) ? res.status(200).json({pictures}) : res.status(404).json({msg: 'No existe el producto indicado'});
+            (pictures.length > 0) ? res.status(200).json({pictures}) : res.status(404).json({msg: 'No existe el producto indicado o no hay fotos'});
             }
     } catch (error) {
         res.status(500).json({msg: 'Server error'});

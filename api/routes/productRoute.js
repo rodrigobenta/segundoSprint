@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 router.get('/', verifyJWT, existProductListVerify, listProduct);
-router.get('/search/', verifyJWT, existProductListKeywordVerify, listProductByKeyword);
+router.get('/search', verifyJWT, existProductListKeywordVerify, listProductByKeyword);
 router.get('/mostwanted', verifyJWT, existProductListMostwantedVerify, listMostWantedProduct);
 router.get('/:id/pictures',verifyJWT, listPictures);
 router.get('/:id', verifyJWT, existProductListByIdVerify, listProductByID);
