@@ -8,6 +8,7 @@ const verifyCreate = [
     check('title', 'Ingrese un titulo').not().isEmpty(),
     check('title').custom(verifyTitle),
     check('stock', 'Ingrese un numero mayor a 0').isInt({ min: 1}),
+    check('price', 'El precio debe ser mayor a 0').not().isEmpty().isNumeric({min:0}),
     check('description', 'Ingrese una descripcion').not().isEmpty(),
     check('mostwanted', 'Ingrese un valor entre 1 y 0 siendo 1 True').isInt({min:0, max:1}),
     check('fk_id_category', 'Ingrese un id de categoria que exista').not().isEmpty(),
@@ -20,6 +21,7 @@ const verifyCreate = [
 const verifyEdit = [
     check('title').isLength({ min: 1}).custom(verifyTitle).optional({nullable: true}),
     check('stock', 'Ingrese un numero mayor a 0').isInt({ min: 1}).optional({nullable: true}),
+    check('price', 'El precio debe ser mayor a 0').not().isEmpty().optional().isNumeric({min:0}),
     check('description', 'Ingrese una descripcion').not().isEmpty().optional({nullable: true}),
     check('mostwanted', 'Ingrese un valor entre 1 y 0 siendo 1 True').isInt({min:0, max:1}).optional({nullable: true}),
     check('fk_id_category').custom(verifyCategory).optional({nullable: true}),
