@@ -547,7 +547,7 @@ paths:
                         items:
                           type: object 
                           properties:
-                            fk_id_product:
+                            product:
                               type: number
                             quantity:
                               type: number
@@ -658,12 +658,12 @@ paths:
                   type: string
                 stock:
                   type: number
-                price:
-                  type: number
                 description:
                   type: string
+                price:
+                  type: number
                 fk_id_category:
-                  type: string
+                  type: number
                 mostwanted:
                   type: number
 
@@ -744,7 +744,7 @@ paths:
                 description:
                   type: string
                 fk_id_category:
-                  type: string
+                  type: number  
                 mostwanted:
                   type: number  
 
@@ -862,7 +862,7 @@ paths:
                             picture_id:
                               type: number
                             picture_url:
-                              type: number
+                              type: string
                       mostwanted:
                         type: boolean
                       stock:
@@ -940,7 +940,7 @@ paths:
                             picture_id:
                               type: number
                             picture_url:
-                              type: number
+                              type: string
                       mostwanted:
                         type: boolean
                       stock:
@@ -1007,7 +1007,7 @@ paths:
                             picture_id:
                               type: number
                             picture_url:
-                              type: number
+                              type: string
                       mostwanted:
                         type: boolean
                       stock:
@@ -1074,7 +1074,7 @@ paths:
                             picture_id:
                               type: number
                             picture_url:
-                              type: number
+                              type: string
                       mostwanted:
                         type: boolean
                       stock:
@@ -1539,7 +1539,7 @@ paths:
                         items:
                           type: object 
                           properties:
-                            fk_id_product:
+                            product:
                               type: number
                             quantity:
                               type: number
@@ -1723,7 +1723,7 @@ paths:
               type: object
               properties:
                 title:
-                  type: number
+                  type: string
               
       responses: 
         '200':
@@ -1798,4 +1798,4 @@ paths:
               schema:
                 properties:
                   Mensaje: 
-                    type: string    
+                    type: string      

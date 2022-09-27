@@ -23,7 +23,7 @@ const existListCategory = async ( req,res,next) => {
                 res.status(404).json({ msg: 'No existe la categoria.' });
             }
         }else{
-            const categorys = await db.Category.findAll();
+            const categorys = await db.Category.findAll({order: ['id_category']});
             if (categorys[0] != null) {
                 req.category = categorys;
                 next();
@@ -31,7 +31,7 @@ const existListCategory = async ( req,res,next) => {
                 res.status(404).json({ msg: 'No existe esa categoria.' });
             }
         }
-    }catch{
+    }catch(error){
         res.status(500).json({ msg: 'Server error.' })
     }
 }
