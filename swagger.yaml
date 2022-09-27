@@ -658,6 +658,8 @@ paths:
                   type: string
                 stock:
                   type: number
+                price:
+                  type: number
                 description:
                   type: string
                 fk_id_category:
