@@ -22,11 +22,11 @@ const cartOfId = async(req, res) => {
         if(userEdit){
             const cartOfUser = await db.User.findByPk(Number(req.params.id),
                                 { attributes:['username'],
-                                    include: {association: 'cart',attributes: ['title','price'], //product_user
+                                    include: {association: 'carts',attributes: ['title','price'], //product_user
                                     through: {attributes:['quantity']}}
                                     },{raw: true ,nest: true});
-
-                                    cartOfUser.product_user.forEach((el) => {
+                                    console.log(cartOfUser);
+                                    cartOfUser.carts.forEach((el) => {
                                         //console.log(el.dataValues.title);
                                         //console.log(el.dataValues.Cart.dataValues.quantity);
                                         totalSold += el.dataValues.price * el.dataValues.Cart.dataValues.quantity;
