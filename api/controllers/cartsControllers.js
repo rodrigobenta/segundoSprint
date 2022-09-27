@@ -1,18 +1,6 @@
-const fs = require("fs");
 const direcionBaseUsuarios= process.env.RUTA_DB_USER;
 const db = require('../../database/models');
-//const { param } = require("../routes/cartsRoutes");
 
-
-function getDataU(direccion){
-    try {
-        let data = fs.readFileSync(direccion, 'utf-8');
-        data = JSON.parse(data);
-        return data;
-    } catch (error) {
-        return error;
-    }
-}
 
 function getCart(usuarioID){
     try {
@@ -34,7 +22,7 @@ const cartOfId = async(req, res) => {
         if(userEdit){
             const cartOfUser = await db.User.findByPk(Number(req.params.id),
                                 { attributes:['username'],
-                                    include: {association: 'product_user',attributes: ['title','price'], 
+                                    include: {association: 'cart',attributes: ['title','price'], //product_user
                                     through: {attributes:['quantity']}}
                                     },{raw: true ,nest: true});
 

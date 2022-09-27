@@ -83,8 +83,8 @@ const editProduct = async (req, res) => {
         await db.Product.update({ ...body, fk_id_category },{ where: { id_product: Number(idProduct) } });
         const productEdited = await db.Product.findByPk(Number(idProduct), {
             include: [
-                { association: 'picture_product', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false },
-                { association: 'category_product', attributes: { exclude: ['id_category'] }, require: false }
+                { association: 'pictures', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false },
+                { association: 'category', attributes: { exclude: ['id_category'] }, require: false }
             ], attributes: { exclude: ['fk_id_category'] }
         });
 

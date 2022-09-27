@@ -41,7 +41,7 @@ module.exports = (sequelize, dataTypes) => {
 
     Product.associate = (models) => {
         Product.hasMany(models.Picture,{
-            as: 'picture_product',
+            as: 'pictures',
             foreignKey: 'fk_id_product'
         })
         Product.belongsToMany(models.User,{
@@ -53,7 +53,7 @@ module.exports = (sequelize, dataTypes) => {
             onDelete: 'RESTRICT'
         })
         Product.belongsTo(models.Category,{
-            as: "category_product",
+            as: "category",
             foreignKey: 'fk_id_category',
             onUpdate: 'CASCADE',
             onDelete: 'RESTRICT'

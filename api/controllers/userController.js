@@ -47,7 +47,7 @@ const listUsers = async (req,res) => {
                         attributes: {
                         exclude: 'password'
                         },
-                        include: {association: 'product_user',attributes: ['title'], as: 'Cart', 
+                        include: {association: 'cart',attributes: ['title'], as: 'Cart', //product_user
                         through: {attributes:['quantity']}}
                         });
         if(users[0]!= null) res.status(200).json({ Usuarios: users});

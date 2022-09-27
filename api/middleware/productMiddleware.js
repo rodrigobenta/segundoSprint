@@ -36,15 +36,15 @@ const existProductListVerify = async (req,res,next) => {
     if(category){
         products = await db.Product.findAll({
             include: [
-                { association: 'picture_product', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false },
-                { association: 'category_product', attributes: { exclude: ['id_category'] }, where:{ title: { [Op.like]: `${category}` } }, require: false }
+                { association: 'pictures', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false }, //picture_product
+                { association: 'category', attributes: { exclude: ['id_category'] }, where:{ title: { [Op.like]: `${category}` } }, require: false }//category_product
             ], attributes: { exclude: ['fk_id_category'] }
         });
     }else{
         products = await db.Product.findAll({
             include: [
-                { association: 'picture_product', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false },
-                { association: 'category_product', attributes: { exclude: ['id_category'] }, require: false }
+                { association: 'pictures', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false },
+                { association: 'category', attributes: { exclude: ['id_category'] }, require: false }
             ], attributes: { exclude: ['fk_id_category'] }
         });
     }
@@ -59,8 +59,8 @@ const existProductListVerify = async (req,res,next) => {
 const existProductListByIdVerify = async (req,res,next) => {
     const product = await db.Product.findByPk(req.params.id, {
         include: [
-            { association: 'picture_product', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false },
-            { association: 'category_product', attributes: { exclude: ['id_category'] }, require: false }
+            { association: 'pictures', attributes: { exclude: ['id_picture', 'fk_id_product'] }, require: false },//picture_product
+            { association: 'category', attributes: { exclude: ['id_category'] }, require: false }//category_product
         ], attributes: { exclude: ['fk_id_category'] }
     });
     if (product) {
@@ -76,8 +76,8 @@ const existProductListKeywordVerify = async (req,res,next) => {
     const list = await db.Product.findAll( { 
         where: { [Op.or]: [{ description: { [Op.like]: `${key}` } }, { title: { [Op.like]: `${key}` } }] } ,
             include: [
-            {association: 'picture_product', attributes:{exclude: ['id_picture', 'fk_id_product']}, require: false},
-            {association: 'category_product',attributes:{exclude: ['id_category']}, require: false}
+            {association: 'pictures', attributes:{exclude: ['id_picture', 'fk_id_product']}, require: false},
+            {association: 'category',attributes:{exclude: ['id_category']}, require: false}
         ], attributes:{exclude: ['fk_id_category']}
     });
     if (list[0] != null) {
@@ -92,8 +92,8 @@ const existProductListMostwantedVerify = async (req,res,next) => {
     const mostWanted = await db.Product.findAll({
         where: { mostwanted: 1 },
         include: [
-            {association: 'picture_product', attributes:{exclude: ['id_picture', 'fk_id_product']}, require: false},
-            {association: 'category_product',attributes:{exclude: ['id_category']}, require: false}
+            {association: 'pictures', attributes:{exclude: ['id_picture', 'fk_id_product']}, require: false},
+            {association: 'category',attributes:{exclude: ['id_category']}, require: false}
         ], attributes:{exclude: ['fk_id_category']}
     })
     if (mostWanted[0] != null) {

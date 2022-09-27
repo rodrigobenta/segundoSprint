@@ -547,7 +547,7 @@ paths:
                         items:
                           type: object 
                           properties:
-                            product:
+                            fk_id_product:
                               type: number
                             quantity:
                               type: number
@@ -1518,7 +1518,7 @@ paths:
               items:
                 type: object
                 properties:
-                  product:
+                  fk_id_product:
                     type: number
                   quantity:
                     type: number
@@ -1537,7 +1537,7 @@ paths:
                         items:
                           type: object 
                           properties:
-                            product:
+                            fk_id_product:
                               type: number
                             quantity:
                               type: number
