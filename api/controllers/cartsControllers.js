@@ -10,8 +10,7 @@ const cartOfId = async(req, res) => {
                                 { attributes:['username'],
                                     include: {association: 'carts',attributes: ['title','price'], 
                                     through: {attributes:['quantity']}}
-                                    },{raw: true ,nest: true});
-                                    console.log(cartOfUser);
+                                    },{raw: true ,nest: true});                                    
                                     cartOfUser.carts.forEach((el) => {                                        
                                         totalSold += el.dataValues.price * el.dataValues.Cart.dataValues.quantity;
                                     });
