@@ -1,4 +1,4 @@
 /node_modules
 /.vscode
-/database/config.js
+/config.js
 /app.js

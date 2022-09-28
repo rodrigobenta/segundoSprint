@@ -38,7 +38,7 @@ const listUsers = async (req,res) => {
     try {
         const users = await db.User.findAll({
             attributes: {exclude: 'password'},
-            include: {association: 'cart',attributes: ['title'], as: 'Cart',
+            include: {association: 'carts',attributes: ['title'], as: 'Cart',
             through: {attributes:['quantity']}}
             });
         if(users[0]!= null) res.status(200).json({ Usuarios: users});

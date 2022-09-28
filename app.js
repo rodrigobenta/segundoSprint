@@ -52,6 +52,6 @@ app.delete('/*', (req,res)=>{
 
 
 app.listen(3001, async () => {
-    sequelize.sync({/* alter: true */}) //danger
+    sequelize.sync({alter: true}) //danger
     console.log("Server corriendo en puerto 3001")
 })
