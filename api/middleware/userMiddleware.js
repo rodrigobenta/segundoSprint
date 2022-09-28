@@ -33,7 +33,7 @@ const db = require('../../database/models')
         try {
             const userExist = await db.User.findByPk(Number(req.params.id),{
                 attributes: {exclude: 'password'},
-                include: {association: 'cart',attributes: ['title'], as: 'Cart', 
+                include: {association: 'carts',attributes: ['title'], as: 'Cart', 
                 through: {attributes:['quantity']}}
                 },
                 {raw: true});
